@@ -62,7 +62,7 @@
                                     <?php } ?>
                                 </select>
                             </label>
-                            <input type="button" value="Switch to branch" onclick="window.location = 'index.php?branch=' + document.getElementById('select').value" >
+                            <input type="button" value="Switch to branch" onclick="window.location = 'index.php?branch=' + document.getElementById('select-active-branches').value" >
                         </form>
                         <?php } ?>                        
                         
@@ -80,7 +80,7 @@
                                         <?php } ?>
                                     </select>
                                 </label>
-                                <input type="button" value="Switch to branch" onclick="window.location = 'index.php?branch=' + document.getElementById('select2').value" >
+                                <input type="button" value="Switch to branch" onclick="window.location = 'index.php?branch=' + document.getElementById('select-merged-branches').value" >
                             </form>
                         </div>
                         <?php } ?>
@@ -96,7 +96,7 @@
                                 <?php } ?>
                             </select>
                             </label>
-                            <input type="button" value="Switch to tag" onclick="window.location = 'index.php?tag=' + document.getElementById('tag').value" >
+                            <input type="button" value="Switch to tag" onclick="window.location = 'index.php?tag=' + document.getElementById('select-tags').value" >
                         <?php } ?>
                         
                         <div class="clear tags-margins">&nbsp;</div>
