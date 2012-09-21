@@ -1,1 +1,15 @@
-readme
+About
+---
+
+CodePax is a free and open source (New BSD) web based deployment tool designed for source code and database control and versioning. It is built in PHP, relies on SVN and runs on both Linux and Windows.
+
+The database versioning module is currently available for MySQL, PostgreSQL and
+MS SQL databases. It also uses a flexible hook system allowing post release operations. The hooks can run independently from the versioning process
+
+CodePax can be deployed on any development environment, including production, with one purpose in mind: to automate the code releases and eliminate human error. Developers will therefore not require server or database access in order to perform a release: CodePax does that at a push of a button.
+
+
+Instalation
+---
+
+Installation instructions can be found on the wiki page: https://sourceforge.net/p/codepax/wiki/How%20to%20install%20it/
