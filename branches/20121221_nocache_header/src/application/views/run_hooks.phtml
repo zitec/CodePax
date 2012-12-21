@@ -1,0 +1,9 @@
+<?php if ($this->no_hooks_selected) { ?>
+    No hook selected!
+<?php } else { ?>    
+    <?php if ($this->hook_results) { ?>
+        <?php foreach ($this->hook_results as $hook => $output) { ?>
+        <p><?php echo $hook; ?>: <?php echo $output; ?></p>
+        <?php } ?>
+    <?php } ?>
+<?php } ?>
