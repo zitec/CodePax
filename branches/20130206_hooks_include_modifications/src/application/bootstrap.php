@@ -50,13 +50,21 @@ define('CONFIG_PATH', APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR);
 
 require CONFIG_PATH . 'config.php';
 
+$original_include_path = get_include_path();
+if (defined('USE_HOOKS') && USE_HOOKS === true && defined('HOOKS_DIR')) {
+	// add the HOOKS_DIR on the include path to ensure the loading of specific classes
+	$original_include_path  = HOOKS_DIR . PATH_SEPARATOR . $original_include_path;
+}
 set_include_path(APPLICATION_PATH . 'models'
 	. PATH_SEPARATOR . ROOT_PATH . 'library'
-	. PATH_SEPARATOR . get_include_path()
+	. PATH_SEPARATOR . $original_include_path
 );
 
 function CodePaxAutoload($_class_name) {
-	$class = str_replace('_', DIRECTORY_SEPARATOR, substr($_class_name, 8)) . '.php';
+	//changed the autoloader to ensure standard name classes are loading
+	//replaced subtstr($_class_name, 8) with str_replace('CodePax_', '', $_class_name)
+	$_class_name = str_replace('CodePax_', '', $_class_name);
+	$class = str_replace('_', DIRECTORY_SEPARATOR, $_class_name) . '.php';
 	include_once $class;
 }
 
