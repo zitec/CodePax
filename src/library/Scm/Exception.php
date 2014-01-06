@@ -15,14 +15,13 @@
  * */
 
 /**
- * Custom Exception class for dealing with exceptions
- * thrown in the View class.
+ * Custom exception class for SCM module
  *
  * @category CodePax
- * @package View
+ * @subpackage Scm
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_View_Exception extends Exception {
+class CodePax_Scm_Exception extends Exception {
 
 }
