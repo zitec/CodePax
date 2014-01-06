@@ -4,7 +4,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="css/style.css?v=<?php echo VERSION_NUMBER; ?>" />
         <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
-        <!--[if lte IE 9]>
+        <!--[if lte IE 9]>current_position
+
             <script src="js/html5.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
         <![endif]-->
         <title><?php echo $this->project_name, ' - ', $this->environment; ?></title>
@@ -14,8 +15,8 @@
             <h1 class="logo"><a href="index.php" title="CodePax">CodePax</a></h1>
             <div class="version_number">v <?php echo VERSION_NUMBER; ?></div>
         </header>
-        
-        <!-- BEGIN data -->        
+
+        <!-- BEGIN data -->
         <section class="svn-details">
             <div>
                 <article>
@@ -24,92 +25,113 @@
                             <span class="borderfix"></span><?php echo $this->project_name; ?> - <span><?php echo $this->environment; ?></span>
                         </h2>
                     </header>
-                    <?php if ($this->svn_top_info) { ?>
-                    <div class="clearfix">                     
-                        <?php if ($this->svn_top_info) { ?>
-                        <ul class="svn-info">                            
-                            <?php foreach ($this->svn_top_info as $name => $value) { ?>
-                            <?php $value = preg_replace('/(trunk|branches|tags)/', '<span>$1</span>', $value); ?>
-                            <li><span><?php echo $name; ?>:</span><?php echo $value; ?></li>
-                            <?php } ?>                             
-                        </ul>
-                        <?php } ?>
-                        <?php if ($this->svn_more_info) { ?>
-                        <ul class="svn-more-info">
-                            <?php foreach ($this->svn_more_info as $name => $value) { ?>
-                            <li><b><?php echo $name; ?>:</b> <?php echo $value; ?></li>
+                    <?php if ($this->repo_top_info) { ?>
+                        <div class="clearfix">
+                            <?php if ($this->repo_top_info) { ?>
+                                <ul class="svn-info">
+                                    <?php foreach ($this->repo_top_info as $name => $value) { ?>
+                                        <?php $value = preg_replace('/(trunk|branches|tags)/', '<span>$1</span>', $value); ?>
+                                        <li><span><?php echo $name; ?>:</span><?php echo $value; ?></li>
+                                    <?php } ?>
+                                </ul>
                             <?php } ?>
-                        </ul>
-                        <?php } ?>                        
-                    </div>
+                            <?php if ($this->repo_more_info) { ?>
+                                <ul class="svn-more-info">
+                                    <?php foreach ($this->repo_more_info as $name => $value) { ?>
+                                        <li><b><?php echo $name; ?>:</b> <?php echo $value; ?></li>
+                                    <?php } ?>
+                                </ul>
+                            <?php } ?>
+                        </div>
                     <?php } ?>
                 </article>
-               
+
                 <article>
                     <header>
                         <h2 class="section-title icon-svn">
-                            <span class="borderfix"></span>SVN
+                            <span class="borderfix"></span><?php echo VERSIONING ?>
                         </h2>
                     </header>
                     <div>
                         <?php if ($this->active_branches) { ?>
-                        <form>
-                            <label>Active Branches:
-                                <select id="select-active-branches">
-                                    <option value="0">--- Choose a branch ---</option>
-                                    <?php foreach ($this->active_branches as $active_branch) { ?>
-                                    <option value="<?php echo $active_branch; ?>" <?php echo $this->current_position && $this->current_position == $active_branch ? 'selected="selected"' : ''; ?>><?php echo $active_branch; ?></option>
-                                    <?php } ?>
-                                </select>
-                            </label>
-                            <input type="button" value="Switch to branch" onclick="window.location = 'index.php?branch=' + document.getElementById('select-active-branches').value" >
-                        </form>
-                        <?php } ?>                        
-                        
-                        <?php if ($this->merged_branches) { ?>
-                        <div class="clear"></div>
-                        <a href="javascript:animatedcollapse.show('slide-down')" id="show-merged" title="show merged branches">show merged branches</a>
-                        <a href="javascript:animatedcollapse.hide('slide-down')" id="hide-merged" title="hide merged branches">hide merged branches</a>
-                        <div id="slide-down" style="width: 100%; display:none">
                             <form>
-                                <label>Merged Branches:
-                                    <select id="select-merged-branches">
+                                <label>Active Branches:
+                                    <select id="select-active-branches">
                                         <option value="0">--- Choose a branch ---</option>
-                                        <?php foreach ($this->merged_branches as $merged_branch) { ?>
-                                        <option value="<?php echo $merged_branch; ?>" <?php echo $this->current_position && $this->current_position == $merged_branch ? 'selected="selected"' : ''; ?>><?php echo $merged_branch; ?></option>
+                                        <?php foreach ($this->active_branches as $active_branch) { ?>
+                                            <option value="<?php echo $active_branch; ?>" <?php echo $this->current_position && $this->current_position == $active_branch ? 'selected="selected"' : ''; ?>><?php echo $active_branch; ?></option>
                                         <?php } ?>
                                     </select>
                                 </label>
-                                <input type="button" value="Switch to branch" onclick="window.location = 'index.php?branch=' + document.getElementById('select-merged-branches').value" >
+                                <input type="button" value="Switch to branch" onclick="switchToBranch()" >
                             </form>
-                        </div>
                         <?php } ?>
-                        
+
+                        <?php if ($this->merged_branches) { ?>
+                            <div class="clear"></div>
+                            <a href="javascript:animatedcollapse.show('slide-down-merged')" id="show-merged" title="show merged branches">show merged branches</a>
+                            <a href="javascript:animatedcollapse.hide('slide-down-merged')" id="hide-merged" title="hide merged branches">hide merged branches</a>
+                            <div id="slide-down-merged" style="width: 100%; display:none">
+                                <form>
+                                    <label>Merged Branches:
+                                        <select id="select-merged-branches">
+                                            <option value="0">--- Choose a branch ---</option>
+                                            <?php foreach ($this->merged_branches as $merged_branch) { ?>
+                                                <option value="<?php echo $merged_branch; ?>" <?php echo $this->current_position && $this->current_position == $merged_branch ? 'selected="selected"' : ''; ?>><?php echo $merged_branch; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </label>
+                                    <input type="button" value="Switch to branch" onclick="window.location = 'index.php?branch=' + document.getElementById('select-merged-branches').value" >
+                                </form>
+                            </div>
+                        <?php } ?>
+
                         <div class="clear">&nbsp;</div>
-                        
+
+                        <?php if ($this->remote_branches) { ?>
+                            <div class="clear"></div>
+                            <a href="javascript:animatedcollapse.show('slide-down-remote')" id="show-remote" title="show remote branches">show remote branches</a>
+                            <a href="javascript:animatedcollapse.hide('slide-down-remote')" id="hide-remote" title="hide remote branches">hide remote branches</a>
+                            <div id="slide-down-remote" style="width: 100%; display:none">
+                                <form>
+                                    <label>REMOTE Branches:
+                                        <select id="select-remote-branches">
+                                            <option value="0">--- Choose a branch ---</option>
+                                            <?php foreach ($this->remote_branches as $remote_branch) { ?>
+                                                <option value="<?php echo $remote_branch; ?>" <?php echo $this->current_position && $this->current_position == $remote_branch ? 'selected="selected"' : ''; ?>><?php echo $remote_branch; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </label>
+                                    <input type="button" value="Switch to branch" onclick="window.location = 'index.php?branch=' + document.getElementById('select-remote-branches').value" >
+                                </form>
+                            </div>
+                        <?php } ?>
+
+                        <div class="clear">&nbsp;</div>
+
                         <?php if ($this->tags) { ?>
-                        <label>Tags:
-                            <select id="select-tags">
-                                <option value="0">--- Choose Tag ---</option>
-                                <?php foreach ($this->tags as $tag) { ?>
-                                <option value="<?php echo $tag; ?>" <?php echo $this->current_position && $this->current_position == $tag ? 'selected="selected"' : ''; ?>><?php echo $tag; ?></option>
-                                <?php } ?>
-                            </select>
+                            <label>Tags:
+                                <select id="select-tags">
+                                    <option value="0">--- Choose Tag ---</option>
+                                    <?php foreach ($this->tags as $tag) { ?>
+                                        <option value="<?php echo $tag; ?>" <?php echo $this->current_position && $this->current_position == $tag ? 'selected="selected"' : ''; ?>><?php echo $tag; ?></option>
+                                    <?php } ?>
+                                </select>
                             </label>
                             <input type="button" value="Switch to tag" onclick="window.location = 'index.php?tag=' + document.getElementById('select-tags').value" >
                         <?php } ?>
-                        
+
                         <div class="clear tags-margins">&nbsp;</div>
                         <div class="clearfix">
                             <label>Revision:
                                 <br class="display" />
-                                <input type="text" name="revision_no" id="revision_no" size="5">				
+                                <input type="text" name="revision_no" id="revision_no" size="5">
                                 <p>(leave blank to update to HEAD revision)</p>
                             </label>
                             <input type="button" value="Update" onclick="window.location = 'index.php?revision_no=' + document.getElementById('revision_no').value" >
 
                             <?php if ($this->switch_to_trunk) { ?>
-                            <input type="button" value="Switch to trunk" onclick="window.location = 'index.php?trunk'">
+                                <input type="button" value="Switch to master" onclick="window.location = 'index.php?trunk'">
                             <?php } ?>
                         </div>
                     </div>
@@ -117,132 +139,133 @@
                 </article>
 
                 <?php if ($this->use_hooks) { ?>
-                <form id="apply_hooks_form" action="run_hooks.php" method="post">
-                <article>
-                    <header>
-                        <h2 class="section-title icon-hooks">
-                            <span class="borderfix"></span>Hooks
-                        </h2>
-                    </header>
-                    <div class="clearfix" id="hook_list">                        
-                        <?php if ($this->hooks) { ?>
-                            <?php foreach ($this->hooks as $hook) { ?>
-                            <label for="<?php echo $hook; ?>">                                
-                                <input type="checkbox" id="<?php echo $hook; ?>" name="<?php echo $hook; ?>" value="1" />
-                                <?php echo $hook; ?>
-                            </label>
-                            <?php } ?>
-                            <div class="clear">&nbsp;</div>
-                            <input type="submit" value="run scripts" />
-                        <?php } ?>                                                
-                    </div>
-                </article>
-                </form>
-                <?php } ?>
-                
-                <?php if ($this->use_db_versioning) { ?>
-                <form id="run_db_scripts_form" action="run_db_scripts.php" method="post">
-                <article>
-                    <header>
-                        <h2 class="section-title icon-database">
-                            <span class="borderfix"></span>Database versioning
-                        </h2>
-                    </header>                    
-                    <div class="database-versioning">                        
-                        <p class="title">Database <b><?php echo $this->database_name; ?></b><br />
-                        <p>Structure version <b><?php echo $this->database_structure_version; ?></b>, last updated on <?php echo $this->database_structure_last_update; ?><br />
-                            Data version <b><?php echo $this->database_data_version; ?></b>, last updated on <?php echo $this->database_data_last_update; ?></p>
-
-                        <?php if ($this->db_versioning_dev_note) { ?>
-                        <p class="note"><b>Note:</b> the database will be dropped then recreated with the latest baseline, 
-                            the change scripts will be applied and finally the test data will be loaded</p>     
-                        <label for="preserve_test_data"><input type="checkbox" name="preserve_test_data" id="preserve_test_data" value="1"/>Preserve test data</label><br /><br />
-                        <?php } ?>
-
-                        <!-- BEGIN db_scripts_available -->
-                        <div id="db_scripts_list">
-                            <?php if ($this->baseline_script) { ?>
-                            <p><?php echo $this->baseline_script; ?> (baseline)</p>
-                            <div class="clear space"></div>
-                            <?php } ?>
-
-                            <ul class="versions">
-                                <li><b>Structure scripts to run</b></li>
-                                <?php if ($this->db_scripts) { ?>
-                                    <?php foreach ($this->db_scripts as $db_script) { ?>
-                                    <li><?php echo $db_script; ?></li>
+                    <form id="apply_hooks_form" action="run_hooks.php" method="post">
+                        <article>
+                            <header>
+                                <h2 class="section-title icon-hooks">
+                                    <span class="borderfix"></span>Hooks
+                                </h2>
+                            </header>
+                            <div class="clearfix" id="hook_list">
+                                <?php if ($this->hooks) { ?>
+                                    <?php foreach ($this->hooks as $hook) { ?>
+                                        <label for="<?php echo $hook; ?>">
+                                            <input type="checkbox" id="<?php echo $hook; ?>" name="<?php echo $hook; ?>" value="1" />
+                                            <?php echo $hook; ?>
+                                        </label>
                                     <?php } ?>
-                                <?php } else { ?>
-                                    <li>n/a</li>
+                                    <div class="clear">&nbsp;</div>
+                                    <input type="submit" value="run scripts" />
                                 <?php } ?>
-                            </ul>
-
-                            <ul class="clearfix">
-                                    <li><b>Data scripts to run</b></li>
-                                    <?php if ($this->data_db_scripts) { ?>
-                                    	<?php foreach ($this->data_db_scripts as $data_db_script) { ?>
-                                    	<li><?php echo $data_db_script; ?></li>
-	                                	<?php } ?>
-	                                <?php } else { ?>
-	                                    <li>n/a</li>
-	                                <?php } ?>
-                            </ul>
-
-                            <br/>
-                            <?php if ($this->db_is_updated) { ?>
-                            <p>Database is up-to-date</p>
-                            <?php } else { ?>
-                            <input type="submit" value="Run" />
-                            <?php } ?>
-                        </div>
-                        <!-- END db_scripts_available -->                        
-                    </div>
-                </article>
-                </form>
+                            </div>
+                        </article>
+                    </form>
                 <?php } ?>
-                <div class="clear">&nbsp;</div>
+
+                <?php if ($this->use_db_versioning) { ?>
+                    <form id="run_db_scripts_form" action="run_db_scripts.php" method="post">
+                        <article>
+                            <header>
+                                <h2 class="section-title icon-database">
+                                    <span class="borderfix"></span>Database versioning
+                                </h2>
+                            </header>
+                            <div class="database-versioning">
+                                <p class="title">Database <b><?php echo $this->database_name; ?></b><br />
+                                <p>Structure version <b><?php echo $this->database_structure_version; ?></b>, last updated on <?php echo $this->database_structure_last_update; ?><br />
+                                    Data version <b><?php echo $this->database_data_version; ?></b>, last updated on <?php echo $this->database_data_last_update; ?></p>
+
+                                <?php if ($this->db_versioning_dev_note) { ?>
+                                    <p class="note"><b>Note:</b> the database will be dropped then recreated with the latest baseline,
+                                        the change scripts will be applied and finally the test data will be loaded</p>
+                                    <label for="preserve_test_data"><input type="checkbox" name="preserve_test_data" id="preserve_test_data" value="1"/>Preserve test data</label><br /><br />
+                                <?php } ?>
+
+                                <!-- BEGIN db_scripts_available -->
+                                <div id="db_scripts_list">
+                                    <?php if ($this->baseline_script) { ?>
+                                        <p><?php echo $this->baseline_script; ?> (baseline)</p>
+                                        <div class="clear space"></div>
+                                    <?php } ?>
+
+                                    <ul class="versions">
+                                        <li><b>Structure scripts to run</b></li>
+                                        <?php if ($this->db_scripts) { ?>
+                                            <?php foreach ($this->db_scripts as $db_script) { ?>
+                                                <li><?php echo $db_script; ?></li>
+                                            <?php } ?>
+                                        <?php } else { ?>
+                                            <li>n/a</li>
+                                        <?php } ?>
+                                    </ul>
+
+                                    <ul class="clearfix">
+                                        <li><b>Data scripts to run</b></li>
+                                        <?php if ($this->data_db_scripts) { ?>
+                                            <?php foreach ($this->data_db_scripts as $data_db_script) { ?>
+                                                <li><?php echo $data_db_script; ?></li>
+                                            <?php } ?>
+                                        <?php } else { ?>
+                                            <li>n/a</li>
+                                        <?php } ?>
+                                    </ul>
+
+                                    <br/>
+                                    <?php if ($this->db_is_updated) { ?>
+                                        <p>Database is up-to-date</p>
+                                    <?php } else { ?>
+                                        <input type="submit" value="Run" />
+                                    <?php } ?>
+                                </div>
+                                <!-- END db_scripts_available -->
+                            </div>
+                        </article>
+                    </form>
+                <?php } ?>
             </div>
-             <span class="copyright">An Open Source Solution by <a href="http://www.zitec.com" target="_blank" title="Complete Software Solutions">Zitec</a></span>
+
+            <span class="copyright">An Open Source Solution by <a href="http://www.zitec.com" target="_blank" title="Complete Software Solutions">Zitec</a></span>
             <a class="change_log clearfix" href="change_log.php">change log</a>
         </section>
 
         <?php if ($this->response_string) { ?>
-        <?php $last_line = ''; ?>
-        <section class="svn-response">
-            <header>
-                <h3>SVN Response</h3>                
-                <ul>
-                    <?php foreach ($this->response_string as $line) { ?>
-                        <?php if (preg_match('/[At|updated to] revision [0-9]+/', $line)) { ?>
-                            <?php $last_line = $line; ?>
-                        <?php } else { ?>
-                            <li><?php echo $line; ?></li>
+            <?php $last_line = ''; ?>
+            <section class="svn-response">
+                <header>
+                    <h3><?php echo VERSIONING ?> Response</h3>
+                    <ul>
+                        <?php foreach ($this->response_string as $line) { ?>
+                            <?php if (preg_match('/[At|updated to] revision [0-9]+/', $line)) { ?>
+                                <?php $last_line = $line; ?>
+                            <?php } else { ?>
+                                <li><?php echo $line; ?></li>
+                            <?php } ?>
                         <?php } ?>
-                    <?php } ?>
-                </ul>                
-            </header>
-            <footer><?php echo $last_line; ?></footer> 
-        </section>
+                    </ul>
+                </header>
+                <footer><?php echo $last_line; ?></footer>
+            </section>
         <?php } ?>
-        
+
         <?php if ($this->error_message) { ?>
-        <div class="main_box" id="error_message">
-            <fieldset>
-                <legend>Error</legend>
-                <?php echo $this->error_message; ?>
-            </fieldset>
-        </div>
+            <div class="main_box" id="error_message">
+                <fieldset>
+                    <legend>Error</legend>
+                    <?php echo $this->error_message; ?>
+                </fieldset>
+            </div>
         <?php } ?>
-        
+
         <script src="js/jquery-1.4.2.min.js" type="text/javascript"></script>
         <script src="js/jquery.form.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
         <script src="js/scripts.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
-        
+
         <script src="js/select.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
         <script src="js/animatedcollapse.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
         <script type="text/javascript">
-            animatedcollapse.addDiv('slide-down', 'fade=1,height=45px')
-            animatedcollapse.init()
-        </script>                       
+                                    animatedcollapse.addDiv('slide-down-remote', 'fade=1,height=45px')
+                                    animatedcollapse.addDiv('slide-down-merged', 'fade=1,height=45px')
+                                    animatedcollapse.init()
+        </script>
     </body>
 </html>
