@@ -20,11 +20,6 @@
  * Used especially for testing, when needed to test a separate branch or tag
  * and keep the master untouched. Also used for updating the working copy to
  * a desired revison or HEAD revision.
- * This class assumes the following repository layout:
- * + repository root
- * 		- master
- * 		- branches
- * 		- tags
  *
  * Important: this class requires a Git command line client
  * to be installed on the runnig machine
@@ -81,8 +76,8 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
     /**
      * Class constructor
      *
-     * --- with these credentials we need to create a ~/.netrc file
-     * ------- machine <hostname=github.com> login <$_git_user> password <$_git_pass>
+     * @param string $_git_user svn user
+     * @param string $_git_pass svn pass
      * @param string $_git_url url to repository
      * @param string $_project_folder project folder
      * */
@@ -318,7 +313,6 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
     public function getRepoInfo()
     {
         //config --get remote.origin.url
-        $repo_info = explode("\n", $this->git_info);
         list($revisionArray, $authorArray, $lastDateArray) = explode("\n", $this->git_info);
 
         list(, $revisionString) = explode(' ', $revisionArray, 2);
