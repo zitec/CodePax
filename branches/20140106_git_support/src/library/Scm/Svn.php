@@ -34,10 +34,9 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_Scm_Svn extends CodePax_Scm_Abstract {
+class CodePax_Scm_Svn extends CodePax_Scm_Abstract
+{
 
-    const TRUNK = 'trunk/';
-    const BRANCHES = 'branches/';
     const TAGS = 'tags/';
 
     /**
@@ -91,12 +90,12 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract {
             $this->path_to_svn_bin = PATH_TO_SVN_BIN;
         }
 
-        $this->svn_connection_string = $this->path_to_svn_bin . " --username={$_svn_user} --password={$_svn_pass}";
+        $this->svn_connection_string = "\"{$this->path_to_svn_bin }\" --username={$_svn_user} --password={$_svn_pass}";
         $this->svn_url = $_svn_url;
-        $this->project_folder = $_project_folder;
+        $this->project_folder = "\"" . $_project_folder . "\"";
 
         //--- set repository info
-        $shell_command = $this->path_to_svn_bin . " info {$this->project_folder}";
+        $shell_command = "\"{$this->path_to_svn_bin}\"  info {$this->project_folder}";
         $response_string = shell_exec($shell_command);
 
         if (isset($response_string)) {
@@ -112,8 +111,9 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract {
     protected function setBranches()
     {
         if (empty($this->branches)) {
-            $shell_command = "echo p|{$this->svn_connection_string} ls " . $this->svn_url . '/' . self::BRANCHES;
+            $shell_command = "echo p|{$this->svn_connection_string} ls " . $this->svn_url . '/' . SCM_BRANCH_PREFIX;
             $response_string = shell_exec($shell_command);
+
             $this->branches = array_map('trim', explode("\n", str_replace('/', '', $response_string)));
             //--- pop the last value since it is empty
             if (count($this->branches) > 1) {
@@ -169,7 +169,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract {
      * */
     public function getTags()
     {
-        $shell_command = "echo p|{$this->svn_connection_string} ls " . $this->svn_url . '/' . self::TAGS;
+        $shell_command = "echo p|{$this->svn_connection_string} ls " . $this->svn_url . '/' . SCM_TAG_PREFIX;
         $response_string = shell_exec($shell_command);
         $res = array_map('trim', explode("\n", str_replace('/', '', $response_string)));
         //--- popout the last value since it is empty
@@ -186,7 +186,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract {
     public function switchToBranch($_name)
     {
         $shell_command = "cd {$this->project_folder}" . $this->command_separator;
-        $shell_command .= "{$this->svn_connection_string} switch \"" . $this->svn_url . '/' . self::BRANCHES . $_name . '" ' . self::GET_RESULT_DIRECTIVE;
+        $shell_command .= "{$this->svn_connection_string} switch " . $this->svn_url . '/' . SCM_BRANCH_PREFIX . $_name . self::GET_RESULT_DIRECTIVE;
         return shell_exec($shell_command);
     }
 
@@ -199,7 +199,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract {
     public function switchToTag($_name)
     {
         $shell_command = "cd {$this->project_folder}" . $this->command_separator;
-        $shell_command .= "{$this->svn_connection_string} switch  \"" . $this->svn_url . '/' . self::TAGS . $_name . '" ' . self::GET_RESULT_DIRECTIVE;
+        $shell_command .= "{$this->svn_connection_string} switch  " . $this->svn_url . '/' . SCM_TAG_PREFIX . $_name . self::GET_RESULT_DIRECTIVE;
         return shell_exec($shell_command);
     }
 
@@ -210,8 +210,8 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract {
      * */
     public function switchToTrunk()
     {
-        $shell_command = "cd {$this->project_folder}" . $this->command_separator;
-        $shell_command .= "{$this->svn_connection_string} switch " . $this->svn_url . '/' . self::TRUNK . ' ' . self::GET_RESULT_DIRECTIVE;
+        $shell_command = "cd \"{$this->project_folder}\"" . $this->command_separator;
+        $shell_command .= "{$this->svn_connection_string} switch " . $this->svn_url . '/' . SCM_STABLE_NAME . ' ' . self::GET_RESULT_DIRECTIVE;
         return shell_exec($shell_command);
     }
 
@@ -223,7 +223,8 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract {
      * */
     public function switchToRevision($_revision_no = null)
     {
-        $revision = isset($_revision_no) ? " -r{$_revision_no}" : null;
+        $revision = !empty($_revision_no) ? " -r{$_revision_no}" : null;
+
         $shell_command = "cd {$this->project_folder}" . $this->command_separator;
         $shell_command .= "{$this->svn_connection_string} update{$revision} " . self::GET_RESULT_DIRECTIVE;
         return shell_exec($shell_command);
@@ -277,36 +278,15 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract {
     public function getCurrentPosition()
     {
         $info_pieces = explode("\n", $this->svn_info);
+
         $url = $this->is_windows ? $info_pieces[2] : $info_pieces[1];
         list($tag_or_branch, $name) = array_slice(explode('/', $url), -2);
         $tag_or_branch = $tag_or_branch . '/';
-        if ($tag_or_branch == self::BRANCHES || $tag_or_branch == self::TAGS) {
+        if ($tag_or_branch == SCM_BRANCH_PREFIX || $tag_or_branch == SCM_TAG_PREFIX) {
             return $name;
         } else { //--- reading from trunk
             return null;
         }
-    }
-
-    /**
-     * Check if connection to SCM
-     * has errors
-     *
-     * @return boolean
-     */
-    public function hasError()
-    {
-        return $this->has_error;
-    }
-
-    /**
-     * Gets the error message
-     * from SCM connection
-     *
-     * @return string
-     */
-    public function getErrorMessage()
-    {
-        return $this->error_message;
     }
 
     /**

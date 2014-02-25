@@ -26,12 +26,10 @@
  * */
 define('PROJECT_NAME', 'Sample Project');
 
-
 /**
  * Defines the versioning system : SVN/GIT
  * */
 define('VERSIONING', 'SVN');
-
 
 /**
  * Takes the following values(lowercased): dev/stg/prod
@@ -77,19 +75,33 @@ define('SCM_USER', 'xxxx');
 define('SCM_PASS', 'yyyy');
 
 /**
- * SVN url to repository
+ * SCM url to repository
  * */
 define('REPO_URL', '');
 
 /**
- * Indicates if the Git Web Interface exists
+ * Indicates the SCM prefix used for branches
+ * Examples:
+ * "branches/" for SVN
+ * "features/" for GIT
  * */
-define('GIT_WEB', "");
+define('SCM_BRANCH_PREFIX', "branches/");
 
 /**
- * Indicates if the Git Branch used as master
+ * Indicates the SCM line used as stable
+ * Example:
+ * "stable" for both SVN and GIT
  * */
-define('MASTER_NAME', "master");
+define('SCM_STABLE_NAME', "stable");
+
+/**
+ * Indicates the SCM prefix used for tags
+ * Available only for SVN
+
+ * Examples:
+ * "tags/" for SVN
+ * */
+define('SCM_TAG_PREFIX', "tags/");
 
 /**
  * Full path to SVN binaries

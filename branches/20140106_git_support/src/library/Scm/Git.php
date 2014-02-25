@@ -11,7 +11,7 @@
  * http://www.codepax.com/license.html
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@codepax.com so we can send you a copy immediately.
+ * to license@codepax.com so we can send you a copy immediately.immediately
  * */
 
 /**
@@ -29,7 +29,8 @@
  * @copyright Copyright (c) 2013 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_Scm_Git extends CodePax_Scm_Abstract {
+class CodePax_Scm_Git extends CodePax_Scm_Abstract
+{
 
     /**
      * Connection string; contains path to GIT binaries, username and password
@@ -89,19 +90,16 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
         }
 
         $this->git_url = $_git_url;
-        $this->project_folder = $_project_folder;
-        $this->git_connection_string = "cd \"{$this->project_folder}\" " . $this->command_separator . $this->path_to_git_bin;
+        $this->project_folder = "\"" . $_project_folder . "\"";
+        $this->git_connection_string = "cd {$this->project_folder}{$this->command_separator}\"{$this->path_to_git_bin}\"";
 
-        $this->checkConfig($_git_user, $_git_pass);
-        //--- remote update
-        $shell_command_update = "cd \"{$this->project_folder}\" ;" . $this->path_to_git_bin . ' remote update ' . self::GET_RESULT_DIRECTIVE;
-        $update_response = shell_exec($shell_command_update);
+        $this->checkLocalConfig();
 
-        if (is_numeric(strpos($update_response, "error: Could not"))) {
-            $this->has_error = true;
-            $this->error_message = $update_response;
-        }
-        //--- set repository info
+        $this->checkRemoteConfig($_git_user, $_git_pass);
+
+        $this->remoteUpdate();
+
+//--- set repository info
         $shell_command = $this->git_connection_string . " log --max-count=1 " . self::GET_RESULT_DIRECTIVE;
         $response_string = shell_exec($shell_command);
 
@@ -115,20 +113,50 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
      * If not, create new url with username and password
      *
      * @param string $_git_user scm username
-     * @param string $_git_pass scm password
+     * @param string $_git_pass
      *
      * @return void
      * */
-    protected function checkConfig($_git_user, $_git_pass)
+    protected function checkRemoteConfig($_git_user, $_git_pass)
     {
-        $shell_command_update = "cd \"{$this->project_folder}\" ;" . $this->path_to_git_bin . ' config remote.origin.url ' . self::GET_RESULT_DIRECTIVE;
+
+        $shell_command_update = $this->git_connection_string . ' config remote.origin.url ' . self::GET_RESULT_DIRECTIVE;
         $remote_url = shell_exec($shell_command_update);
         $parsed_url = parse_url(trim($remote_url));
 
-        if (array_key_exists('user', $parsed_url) === false || array_key_exists('pass', $parsed_url) === false) {
+        if (array_key_exists('user', $parsed_url) === false || array_key_exists('pass', $parsed_url) === false ||
+            $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass) {
+
             $new_url = $parsed_url['scheme'] . '://' . $_git_user . ':' . $_git_pass . '@' . $parsed_url['host'] . $parsed_url['path'];
-            $update_remote_url = "cd \"{$this->project_folder}\" ;" . $this->path_to_git_bin . ' remote set-url origin ' . $new_url . ' ' . self::GET_RESULT_DIRECTIVE;
+            $update_remote_url = $this->git_connection_string . ' remote set-url origin ' . $new_url . ' ' . self::GET_RESULT_DIRECTIVE;
             shell_exec($update_remote_url);
+        }
+    }
+
+    /**
+     * Fetch updates from remote origin
+     */
+    protected function remoteUpdate()
+    {
+        $shell_command_update = "cd \"{$this->project_folder}\" ;" . $this->path_to_git_bin . ' remote update ' . self::GET_RESULT_DIRECTIVE;
+        $update_response = shell_exec($shell_command_update);
+
+        if (is_numeric(strpos($update_response, "error: Could not"))) {
+            $this->setError($update_response);
+        }
+    }
+
+    /**
+     * Check if local folder is a git
+     * repository
+     */
+    protected function checkLocalConfig()
+    {
+//check if the repo is a git repository
+        $shell_command_status = $this->git_connection_string . ' status ' . self::GET_RESULT_DIRECTIVE;
+        $git_status = shell_exec($shell_command_status);
+        if (is_numeric(strpos($git_status, "fatal: "))) {
+            $this->setError($git_status);
         }
     }
 
@@ -144,18 +172,18 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
             $response_string = shell_exec($shell_command);
 
             $this->branches = array_map('trim', explode("\n", $response_string));
-            //--- pop the last value since it is empty
+//--- pop the last value since it is empty
             if (count($this->branches) > 1) {
                 array_pop($this->branches);
             }
 
-            //get the key for branch used as master
-            $masterKey = array_search("origin/" . MASTER_NAME, $this->branches);
-            //get the key for branch defined as default
-            $headKey = array_search("origin/HEAD -> origin/" . MASTER_NAME, $this->branches);
-            //remove the master from active branches
+//get the key for branch used as master
+            $masterKey = array_search("origin/" . SCM_STABLE_NAME, $this->branches);
+//get the key for branch defined as default
+            $headKey = array_search("origin/HEAD -> origin/" . SCM_STABLE_NAME, $this->branches);
+//remove the master from active branches
             unset($this->branches[$masterKey]);
-            //remove the false HEAD branch
+//remove the false HEAD branch
             unset($this->branches[$headKey]);
 
             foreach ($this->branches as $name) {
@@ -211,7 +239,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
         $shell_command = "{$this->git_connection_string} tag -l ";
         $response_string = shell_exec($shell_command);
         $res = array_map('trim', explode("\n", str_replace('/', '', $response_string)));
-        //--- popout the last value since it is empty
+//popout the last value since it is empty
         array_pop($res);
         return $res;
     }
@@ -227,10 +255,10 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
 
         $local_branches = array_map('trim', explode("\n", $response_string));
 
-        //search in list after current branch - the branch that is marked with an *
+//search in list after current branch - the branch that is marked with an *
         $current_branch_key = array_search('* ' . $this->getCurrentPosition(), $local_branches);
 
-        //replace the branch name in order to remove the *
+//replace the branch name in order to remove the *
         $local_branches[$current_branch_key] = $this->getCurrentPosition();
 
         $this->local_branches = $local_branches;
@@ -247,17 +275,16 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
         $this->getLocalBranches();
 
         if (in_array($name, $this->local_branches)) {
-
-            // switch to branch
+// switch to branch
             $shell_command = "{$this->git_connection_string} checkout {$name} " . self::GET_RESULT_DIRECTIVE;
             shell_exec($shell_command);
 
-            //update branch
+//update branch
             return $this->updateCurrentBranch();
+        } else {
+            $shell_command = "{$this->git_connection_string} checkout -b {$name} origin/" . $name . " " . self::GET_RESULT_DIRECTIVE;
+            return shell_exec($shell_command);
         }
-
-        $shell_command = "{$this->git_connection_string} checkout -b {$name} origin/" . $name . " " . self::GET_RESULT_DIRECTIVE;
-        return shell_exec($shell_command);
     }
 
     /**
@@ -267,7 +294,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
      */
     public function updateCurrentBranch()
     {
-        $update_command = "{$this->git_connection_string} pull " . self::GET_RESULT_DIRECTIVE;
+        $update_command = "{$this->git_connection_string} pull" . self::GET_RESULT_DIRECTIVE;
         return shell_exec($update_command);
     }
 
@@ -289,7 +316,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
      * */
     public function switchToTrunk()
     {
-        return self::switchToBranch(MASTER_NAME);
+        return self::switchToBranch(SCM_STABLE_NAME);
     }
 
     /**
@@ -312,15 +339,13 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
      * */
     public function getRepoInfo()
     {
-        //config --get remote.origin.url
+//config --get remote.origin.url
         list($revisionArray, $authorArray, $lastDateArray) = explode("\n", $this->git_info);
 
         list(, $revisionString) = explode(' ', $revisionArray, 2);
         list(, $authorString) = explode(' ', $authorArray, 2);
         list(, $lastDateString) = explode(' ', $lastDateArray, 2);
         $current_branch = $this->getCurrentPosition();
-
-        $this->top_info["URL"] = GIT_WEB . 'tree/' . $current_branch;
 
         $this->top_info = array_merge($this->top_info, array(
             "Branch" => $current_branch,
@@ -352,28 +377,6 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
     }
 
     /**
-     * Check if connection to SCM
-     * has errors
-     *
-     * @return boolean
-     */
-    public function hasError()
-    {
-        return $this->has_error;
-    }
-
-    /**
-     * Gets the error message
-     * from SCM connection
-     *
-     * @return string
-     */
-    public function getErrorMessage()
-    {
-        return $this->error_message;
-    }
-
-    /**
      * Get name of the branch or tag is reading from.
      * When reading from trunk the method will return null
      *
@@ -393,7 +396,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
      * */
     public function add($_path)
     {
-        //$shell_command = "cd {$this->project_folder}" . $this->command_separator;
+//$shell_command = "cd {$this->project_folder}" . $this->command_separator;
         $shell_command .= "{$this->path_to_git_bin} --force add {$_path} " . self::GET_RESULT_DIRECTIVE;
         return shell_exec($shell_command);
     }
@@ -406,7 +409,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
      * */
     public function commit($_message)
     {
-        //$shell_command = "cd {$this->project_folder}" . $this->command_separator;
+//$shell_command = "cd {$this->project_folder}" . $this->command_separator;
         $shell_command .= "{$this->git_connection_string} commit --message \"{$_message}\" " . self::GET_RESULT_DIRECTIVE;
 
         return shell_exec($shell_command);
@@ -423,5 +426,10 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract {
     {
         $this->add($_path);
         return $this->commit($_message);
+    }
+
+    protected function setError($message)
+    {
+        throw new Exception($message);
     }
 }

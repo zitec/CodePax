@@ -8,13 +8,12 @@ function toggleMergedBranches(_object) {
 }
 
 
-function switchToBranch()
+function switchTo(line, name)
 {
     //add a random number in url in order to ignore the cache
     var numRand = Math.floor(Math.random() * 101)
-    window.location = 'index.php?branch=' + document.getElementById('select-active-branches').value + '&rand=' + numRand;
+    window.location = 'index.php?' + line + '=' + name + '&rand=' + numRand;
 }
-
 
 $(document).ready(function() {
     // submit the Hooks form
