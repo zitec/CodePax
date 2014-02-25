@@ -19,9 +19,10 @@
  *
  * @author marius.balteanu
  */
-abstract class CodePax_Scm_Abstract {
+abstract class CodePax_Scm_Abstract
+{
 
-    const GET_RESULT_DIRECTIVE = '2>&1';
+    const GET_RESULT_DIRECTIVE = ' 2>&1';
 
     /**
      * Project folder relative to this script
@@ -66,27 +67,12 @@ abstract class CodePax_Scm_Abstract {
      * */
     protected $is_windows = false;
 
-    /**
-     * Flag to indicate if there were
-     * connections issues
-     * */
-    protected $has_error = false;
-
-    /**
-     * Holds the error messages received
-     * when the ocnnection to SCM server is made
-     *
-     * @var string
-     * */
-    protected $error_message = null;
-
     public function __construct()
     {
         // WIN detected
         if (strpos(strtolower(PHP_OS), 'win') !== false) {
             $this->is_windows = true;
             $this->command_separator = "&&";
-            $this->path_to_svn_bin = '"' . $this->path_to_svn_bin . '"';
         }
     }
 
@@ -168,22 +154,6 @@ abstract class CodePax_Scm_Abstract {
     abstract public function getRepoTopInfo();
 
     abstract public function getRepoMoreInfo();
-
-    /**
-     * Gets the error message
-     * from SCM connection
-     *
-     * @return string
-     */
-    abstract public function getErrorMessage();
-
-    /**
-     * Check if connection to SCM
-     * has errors
-     *
-     * @return boolean
-     */
-    abstract public function hasError();
 
     /**
      * Get name of the branch or tag is reading from.

@@ -256,7 +256,7 @@ input[type *=text] {
 }
 input[type *=text] {
     padding: 5px 10px 5px 10px;
-    height: 15px;
+    height: 15px !important;
 }
 input[value *= Switch]{
     width: 150px;

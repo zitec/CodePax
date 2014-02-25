@@ -29,9 +29,9 @@ $view->setCurrentView('index');
 
 try {
     $repo_wrapper = CodePax_Scm_Factory::Factory(VERSIONING);
-
+//    var_dump($repo_wrapper);
     //--- execute some action: update, switch, etc
-    if (!empty($_GET) && $repo_wrapper->hasError() === false) {
+    if (!empty($_GET)) {
         $response_string = null;
         //--- switch to branch
         if (isset($_GET['branch']) && strlen($_GET['branch']) > 1 && defined('SWITCH_TO_BRANCH') && SWITCH_TO_BRANCH === true) {
@@ -41,8 +41,8 @@ try {
         if (isset($_GET['tag']) && strlen($_GET['tag']) > 1 && defined('SWITCH_TO_TAG') && SWITCH_TO_TAG === true) {
             $response_string = $repo_wrapper->switchToTag($_GET['tag']);
         }
-        //--- switch to trunk
-        if (isset($_GET['trunk']) && defined('SWITCH_TO_TRUNK') && SWITCH_TO_TRUNK === true) {
+        //--- switch to stable
+        if (isset($_GET['stable']) && defined('SWITCH_TO_TRUNK') && SWITCH_TO_TRUNK === true) {
             $response_string = $repo_wrapper->switchToTrunk();
         }
         //--- switch to revision
@@ -54,10 +54,6 @@ try {
 
         //--- recreate object with new info
         $repo_wrapper = CodePax_Scm_Factory::Factory(VERSIONING);
-    }
-
-    if ($repo_wrapper->hasError() === true) {
-        $view->error_message = $repo_wrapper->getErrorMessage();
     }
 } catch (Exception $e) {
     $view->error_message = $e->getMessage();
@@ -77,6 +73,7 @@ $view->current_position = $repo_wrapper->getCurrentPosition(); //$repo_wrapper->
 //--- show "switch to trunk" button
 if (defined('SWITCH_TO_TRUNK') && SWITCH_TO_TRUNK === true) {
     $view->switch_to_trunk = true;
+    $view->switch_to_trunk_button = SCM_STABLE_NAME;
 }
 
 //--- show/hide branches
