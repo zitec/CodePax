@@ -90,14 +90,19 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
             $this->path_to_svn_bin = PATH_TO_SVN_BIN;
         }
 
-        $this->svn_connection_string = "\"{$this->path_to_svn_bin }\" --username={$_svn_user} --password={$_svn_pass}";
         $this->svn_url = $_svn_url;
-        $this->project_folder = "\"" . $_project_folder . "\"";
+        $this->project_folder = $_project_folder;
+
+        if ($this->is_windows) {
+            $this->path_to_svn_bin = "\"{$this->path_to_svn_bin }\"";
+            $this->project_folder = "\"" . $_project_folder . "\"";
+        }
+
+        $this->svn_connection_string = "{$this->path_to_svn_bin } --non-interactive --username={$_svn_user} --password={$_svn_pass}";
 
         //--- set repository info
-        $shell_command = "\"{$this->path_to_svn_bin}\"  info {$this->project_folder}";
+        $shell_command = "{$this->path_to_svn_bin} info {$this->project_folder}";
         $response_string = shell_exec($shell_command);
-
         if (isset($response_string)) {
             $this->svn_info = urldecode(substr($response_string, 0, -2));
         }
@@ -187,6 +192,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
     {
         $shell_command = "cd {$this->project_folder}" . $this->command_separator;
         $shell_command .= "{$this->svn_connection_string} switch " . $this->svn_url . '/' . SCM_BRANCH_PREFIX . $_name . self::GET_RESULT_DIRECTIVE;
+
         return shell_exec($shell_command);
     }
 
