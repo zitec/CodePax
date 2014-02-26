@@ -117,12 +117,11 @@ define('PATH_TO_SVN_BIN', '/usr/bin/svn --config-dir=/tmp');
  * Full path to GIT binaries
  *
  * This constant is OPTIONAL and the path is
- * assumed to be: /usr/bin/svn --config-dir=/tmp
+ * assumed to be: /usr/bin/git
  *
  * When specified it will overwrite the default value
  * */
-//define('PATH_TO_GIT_BIN', 'C:\Program Files (x86)\Git\bin\git.exe');
-define('PATH_TO_GIT_BIN', '');
+define('PATH_TO_GIT_BIN', 'git');
 
 /**
  * Absolute path to project
