@@ -262,7 +262,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
     public function svnCleanup()
     {
         $shell_command = "cd {$this->project_folder}" . $this->command_separator;
-        $shell_command .= "{$this->svn_connection_string} cleanup" . self::GET_RESULT_DIRECTIVE;
+        $shell_command .= "{$this->path_to_svn_bin} cleanup" . self::GET_RESULT_DIRECTIVE;
 
         return shell_exec($shell_command);
     }
@@ -274,7 +274,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
      * */
     private function getStableRevision()
     {
-        $shell_command = "{$this->path_to_svn_bin} info " . $this->svn_url . "/" . SCM_STABLE_NAME;
+        $shell_command = "{$this->svn_connection_string} info " . $this->svn_url . "/" . SCM_STABLE_NAME;
         $response_string = shell_exec($shell_command);
 
         $revision = preg_match('/Last Changed Rev: (\d+)/', $response_string, $matches);
