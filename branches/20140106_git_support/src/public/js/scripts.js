@@ -7,12 +7,18 @@ function toggleMergedBranches(_object) {
     }
 }
 
-
 function switchTo(line, name)
 {
     //add a random number in url in order to ignore the cache
     var numRand = Math.floor(Math.random() * 101)
     window.location = 'index.php?' + line + '=' + name + '&rand=' + numRand;
+}
+
+function svnCleanup()
+{
+    //add a random number in url in order to ignore the cache
+    var numRand = Math.floor(Math.random() * 101)
+    window.location = 'index.php?svncleanup&rand=' + numRand;
 }
 
 $(document).ready(function() {

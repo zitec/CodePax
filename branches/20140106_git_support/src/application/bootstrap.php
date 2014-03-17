@@ -26,7 +26,7 @@ date_default_timezone_set('UTC');
  * CodePax version number to be displayed in main pages
  * and appended to static resources (css and jss)
  * */
-define('VERSION_NUMBER', '4.4.0');
+define('VERSION_NUMBER', '5.0.0');
 
 /**
  * ./application/

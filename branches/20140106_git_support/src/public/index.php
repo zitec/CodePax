@@ -29,12 +29,15 @@ $view->setCurrentView('index');
 
 try {
     $repo_wrapper = CodePax_Scm_Factory::Factory(VERSIONING);
-//    var_dump($repo_wrapper);
+
     //--- execute some action: update, switch, etc
     if (!empty($_GET)) {
         $response_string = null;
         //--- switch to branch
-        if (isset($_GET['branch']) && strlen($_GET['branch']) > 1 && defined('SWITCH_TO_BRANCH') && SWITCH_TO_BRANCH === true) {
+        if (isset($_GET['branch']) && strlen($_GET['branch']) > 1 && defined(
+                'SWITCH_TO_BRANCH'
+            ) && SWITCH_TO_BRANCH === true
+        ) {
             $response_string = $repo_wrapper->switchToBranch($_GET['branch']);
         }
         //--- switch to tag
@@ -48,6 +51,10 @@ try {
         //--- switch to revision
         if (isset($_GET['revision_no']) && defined('SWITCH_TO_REVISION') && SWITCH_TO_REVISION === true) {
             $response_string = $repo_wrapper->switchToRevision($_GET['revision_no']);
+        }
+        //--- run SVN cleanup
+        if (isset($_GET['svncleanup']) && VERSIONING == 'SVN') {
+            $response_string = $repo_wrapper->svnCleanup();
         }
 
         $view->response_string = array_filter(explode("\n", $response_string));
@@ -67,6 +74,7 @@ $view->environment = APPLICATION_ENVIRONMENT;
 $view->repo_info = $repo_wrapper->getRepoInfo();
 $view->repo_top_info = $repo_wrapper->getRepoTopInfo();
 $view->repo_more_info = $repo_wrapper->getRepoMoreInfo();
+$view->revision_status = $repo_wrapper->getBranchStatus();
 
 // repo current working copy
 $view->current_position = $repo_wrapper->getCurrentPosition(); //$repo_wrapper->getCurrentPosition(); //FIXME
@@ -91,6 +99,18 @@ if (defined('SWITCH_TO_REVISION') && SWITCH_TO_REVISION === true) {
     $view->switch_to_revision = true;
 }
 
+if (VERSIONING == 'SVN' &&
+    !empty($response_string) &&
+    is_numeric(
+        strpos(
+            $response_string,
+            "svn: E155004: Run 'svn cleanup' to remove locks (type 'svn help cleanup' for details)"
+        )
+    )
+) {
+    $view->working_copy_locked = true;
+}
+
 //--- show HOOKS section
 if (defined('USE_HOOKS')) {
     $view->use_hooks = USE_HOOKS;
@@ -108,7 +128,11 @@ if (defined('USE_DB_VERSIONING') && USE_DB_VERSIONING === true) {
         $db_versions_model = CodePax_DbVersions::factory();
         if (in_array(APPLICATION_ENVIRONMENT, array('dev', 'prod'))) {
             $latest_baseline_file = CodePax_DbVersioning_Files_Manager::getLatestBaselineVersion();
-            if (!$db_versions_model->checkIsVersionRegistred($latest_baseline_file, CodePax_DbVersions::TYPE_BASELINE)) {
+            if (!$db_versions_model->checkIsVersionRegistred(
+                $latest_baseline_file,
+                CodePax_DbVersions::TYPE_BASELINE
+            )
+            ) {
                 $db_versions_model->addVersion($latest_baseline_file, CodePax_DbVersions::TYPE_BASELINE);
             }
         }
@@ -129,7 +153,10 @@ if (defined('USE_DB_VERSIONING') && USE_DB_VERSIONING === true) {
 
         $new_baseline_available = false;
         if (in_array(APPLICATION_ENVIRONMENT, array('dev', 'prod'))) {
-            $new_baseline_available = (version_compare($latest_structure_version[CodePax_DbVersions::VERSION_ATTRIBUTE], $db_versioning_handler->getLatestBaselineVersion()) == -1);
+            $new_baseline_available = (version_compare(
+                    $latest_structure_version[CodePax_DbVersions::VERSION_ATTRIBUTE],
+                    $db_versioning_handler->getLatestBaselineVersion()
+                ) == -1);
         }
 
         // database is up-to-date

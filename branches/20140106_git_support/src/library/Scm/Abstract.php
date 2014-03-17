@@ -155,6 +155,8 @@ abstract class CodePax_Scm_Abstract
 
     abstract public function getRepoMoreInfo();
 
+    abstract public function getBranchStatus();
+
     /**
      * Get name of the branch or tag is reading from.
      * When reading from trunk the method will return null

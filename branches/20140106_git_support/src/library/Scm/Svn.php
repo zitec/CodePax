@@ -22,9 +22,9 @@
  * a desired revison or HEAD revision.
  * This class assumes the following repository layout:
  * + repository root
- * 		- trunk
- * 		- branches
- * 		- tags
+ *        - trunk
+ *        - branches
+ *        - tags
  *
  * Important: this class requires a Subversion command line client
  * to be installed on the runnig machine
@@ -76,6 +76,23 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
     protected $path_to_svn_bin = '/usr/bin/svn --config-dir=/tmp';
 
     /**
+     * Flag to indicate if the
+     * working copy is locked
+     * or not
+     *
+     * @var integer
+     * */
+    protected $svn_copy_locked = 0;
+
+    /**
+     * The difference between branch revision
+     * and the line marked as stable
+     *
+     * @var integer
+     * */
+    protected $revision_status;
+
+    /**
      * Class constructor
      *
      * @param string $_svn_user svn user
@@ -95,7 +112,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
 
         if ($this->is_windows) {
             $this->path_to_svn_bin = "\"{$this->path_to_svn_bin }\"";
-            $this->project_folder = "\"" . $_project_folder . "\"";
+            $this->project_folder = "\"{$_project_folder}\"";
         }
 
         $this->svn_connection_string = "{$this->path_to_svn_bin } --non-interactive --username={$_svn_user} --password={$_svn_pass}";
@@ -237,7 +254,56 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
     }
 
     /**
-     * Gets info about slected project
+     * Run SVN cleanup command in the project root
+     *
+     *
+     * @return string
+     * */
+    public function svnCleanup()
+    {
+        $shell_command = "cd {$this->project_folder}" . $this->command_separator;
+        $shell_command .= "{$this->svn_connection_string} cleanup" . self::GET_RESULT_DIRECTIVE;
+
+        return shell_exec($shell_command);
+    }
+
+    /**
+     * Get revision for line marked as stable
+     *
+     * @return integer
+     * */
+    private function getStableRevision()
+    {
+        $shell_command = "{$this->path_to_svn_bin} info " . $this->svn_url . "/" . SCM_STABLE_NAME;
+        $response_string = shell_exec($shell_command);
+
+        $revision = preg_match('/Last Changed Rev: (\d+)/', $response_string, $matches);
+        list(, $revision) = $matches;
+
+        return $revision;
+    }
+
+    /**
+     * Return the difference between branch revision
+     * and stable line revision
+     *
+     * @return integer
+     * */
+    public function getBranchStatus()
+    {
+        if (!$this->revision_status) {
+            return false;
+        }
+
+        if ($this->revision_status > 0) {
+            return "This branch is  {$this->revision_status} revision(s) ahead of '" . SCM_STABLE_NAME . "'";
+        } else {
+            return "This branch is " . ($this->revision_status * -1) . " revision(s) behind '" . SCM_STABLE_NAME . "'";
+        }
+    }
+
+    /**
+     * Gets info about selected project
      *
      * The info may be: revision number, last author, modified at, etc.
      *
@@ -249,12 +315,19 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
         $top_markers = array('URL' => 'URL', 'Revision' => 'Revision', 'Last Changed Author' => 'Last changed');
 
         $repo_info = explode("\n", $this->svn_info);
-
         $markers_keys = array_keys($top_markers);
         foreach ($repo_info as $info) {
             $colon_first_pos = strpos($info, ':');
             $info_key = trim(substr($info, 0, $colon_first_pos));
             $info_value = trim(substr($info, $colon_first_pos + 1));
+            //check if the working copy is set on a branch
+            //in order to calculate the branch revision against trunk/stable revision
+            if (is_numeric(strpos($info, "Relative URL: ^/" . SCM_BRANCH_PREFIX))) {
+                $stable_revision= $this->getStableRevision();
+                preg_match('/Last Changed Rev: (\d+)/', $this->svn_info, $matches);
+                list(,$current_revision) = $matches;
+                $this->revision_status = $current_revision-$stable_revision;
+            }
 
             if (in_array($info_key, $markers_keys)) {
                 $this->top_info[$top_markers[$info_key]] = $info_value;
@@ -273,6 +346,11 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
     public function getRepoMoreInfo()
     {
         return $this->more_info;
+    }
+
+    public function getWorkingCopyStatus()
+    {
+        return $this->svn_copy_locked;
     }
 
     /**
@@ -303,8 +381,11 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
      * */
     public function add($_path)
     {
-        $shell_command = "cd {$this->project_folder}" . $this->command_separator;
-        $shell_command .= "echo p|{$this->path_to_svn_bin} --force add {$_path} " . self::GET_RESULT_DIRECTIVE;
+        $shell_command = "cd {
+                $this->project_folder}" . $this->command_separator;
+        $shell_command .= "echo p |{
+                $this->path_to_svn_bin} --force add {
+                $_path} " . self::GET_RESULT_DIRECTIVE;
         return shell_exec($shell_command);
     }
 
@@ -316,22 +397,26 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
      * */
     public function commit($_message)
     {
-        $shell_command = "cd {$this->project_folder}" . $this->command_separator;
-        $shell_command .= "echo p|{$this->svn_connection_string} commit --message \"{$_message}\" " . self::GET_RESULT_DIRECTIVE;
+        $shell_command = "cd {
+                $this->project_folder}" . $this->command_separator;
+        $shell_command .= "echo p |{
+                $this->svn_connection_string} commit--message \"{
+                $_message}\" " . self::GET_RESULT_DIRECTIVE;
 
         return shell_exec($shell_command);
     }
 
-    /**
-     * Add a file to repo and then commit it
-     *
-     * @param string $_message commit message
-     * @param string $_path
-     * @return string
-     * */
-    public function addAndCommit($_message, $_path)
-    {
-        $this->add($_path);
-        return $this->commit($_message);
+        /**
+         * Add a file to repo and then commit it
+         *
+         * @param string $_message commit message
+         * @param string $_path
+         * @return string
+         * */
+        public
+        function addAndCommit($_message, $_path)
+        {
+            $this->add($_path);
+            return $this->commit($_message);
+        }
     }
-}

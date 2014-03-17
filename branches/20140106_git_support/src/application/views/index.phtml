@@ -33,6 +33,9 @@
                                         <?php $value = preg_replace('/(trunk|branches|tags)/', '<span>$1</span>', $value); ?>
                                         <li><span><?php echo $name; ?>:</span><?php echo $value; ?></li>
                                     <?php } ?>
+                                    <?php if ($this->revision_status) : ?>
+                                        <li><span>Branch status:</span><?php echo CodePax_View_Helpers_FormatOutput::formatRevision($this->revision_status) ?></li>
+                                    <?php endif ?>
                                 </ul>
                             <?php } ?>
                             <?php if ($this->repo_more_info) { ?>
@@ -219,6 +222,9 @@
                             <?php } ?>
                         <?php } ?>
                     </ul>
+                    <?php if ($this->working_copy_locked) : ?>
+                        <input type="button" value="SVN Cleanup" onclick="svnCleanup()">
+                    <?php endif ?>
                 </header>
                 <footer><?php echo $last_line; ?></footer>
             </section>
