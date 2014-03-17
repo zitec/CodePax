@@ -294,13 +294,13 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
         $current_revision = $this->top_info['Revision'];
         $stable_revision= $this->getStableRevision();
 
-        $revision_status = $current_revision-$stable_revision;
+        $revision_status = intval($current_revision-$stable_revision);
 
         if ($revision_status == 0) {
             return false;
         }
 
-        if ($this->revision_status > 0) {
+        if ($revision_status > 0) {
             return "This branch is  {$revision_status } revision(s) ahead of '" . SCM_STABLE_NAME . "'";
         } else {
             return "This branch is " . ($revision_status * -1) . " revision(s) behind '" . SCM_STABLE_NAME . "'";
