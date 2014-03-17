@@ -26,9 +26,10 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_View_Helpers_FormatOutput {
+class CodePax_View_Helpers_FormatOutput
+{
 
-    const SVN_OUTPUT_CONFLICT = 'svn_ouotput_conflict';
+    const SVN_OUTPUT_CONFLICT = 'svn_output_conflict';
     const SVN_OUTPUT_OK = 'svn_output_ok';
 
     /**
@@ -59,7 +60,38 @@ class CodePax_View_Helpers_FormatOutput {
     public static function format($_input_string)
     {
         $input_lines = explode("\n", $_input_string);
-        return implode("\n", array_map(
-                array('CodePax_View_Helpers_FormatOutput', 'formatLines'), $input_lines));
+        return implode(
+            "\n",
+            array_map(
+                array('CodePax_View_Helpers_FormatOutput', 'formatLines'),
+                $input_lines
+            )
+        );
+    }
+
+    /**
+     * Mark with red the if the branch revision
+     * is behind stable revision with more than
+     * 2 commits
+     *
+     * @param int $branch_status
+     * @return string the formatted string
+     * */
+    public static function formatRevision($branch_status)
+    {
+        $class = "";
+
+        $found = preg_match('/is (\d+) revision\(s\) behind/', $branch_status, $matches);
+
+        if ($found == 0) {
+            return $branch_status;
+        }
+
+        list(, $revisions) = $matches;
+        if ($revisions > 2) {
+            $class = "notify-status";
+        }
+
+        return "<div class=\"{$class}\">{$branch_status}</div>";
     }
 }
