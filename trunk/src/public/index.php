@@ -103,8 +103,8 @@ if (VERSIONING == 'SVN' &&
     !empty($response_string) &&
     is_numeric(
         strpos(
-            $response_string,
-            "svn: E155004: Run 'svn cleanup' to remove locks (type 'svn help cleanup' for details)"
+            strtolower($response_string),
+            "run 'svn cleanup' to remove locks (type 'svn help cleanup' for details)"
         )
     )
 ) {
