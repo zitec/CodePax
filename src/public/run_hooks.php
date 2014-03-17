@@ -1,7 +1,8 @@
 <?php
+
 /**
  * CodePax
- * 
+ *
  * LICENSE
  *
  * This source file is subject to the New BSD license that is bundled
@@ -12,11 +13,10 @@
  * obtain it through the world-wide-web, please send an email
  * to license@codepax.com so we can send you a copy immediately.
  * */
-
 /**
  * Script called on AJAX used to run every
  * class found under hooks directory
- * 
+ *
  * @category CodePax
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
@@ -37,12 +37,11 @@ $available_hooks = $hooks_hanlder->getList();
 $hooks_to_run = array_intersect_key($available_hooks, $_POST);
 
 if (!empty($hooks_to_run)) {
-	$hooks_hanlder->run($hooks_to_run);
-	$hook_results = $hooks_hanlder->getResults();
-    
+    $hooks_hanlder->run($hooks_to_run);
+    $hook_results = $hooks_hanlder->getResults();
+
     $view->hook_results = $hook_results;
-}
-else {
+} else {
     $view->no_hooks_selected = true;
 }
 

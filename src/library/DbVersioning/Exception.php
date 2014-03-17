@@ -1,7 +1,8 @@
 <?php
+
 /**
  * CodePax
- * 
+ *
  * LICENSE
  *
  * This source file is subject to the New BSD license that is bundled
@@ -15,12 +16,12 @@
 
 /**
  * Custom exception class for DB versioning module
- * 
+ *
  * @category CodePax
  * @subpackage DbVersioning
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
 class CodePax_DbVersioning_Exception extends Exception {
-	
+
 }
