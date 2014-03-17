@@ -1,7 +1,8 @@
 <?php
+
 /**
  * CodePax
- * 
+ *
  * LICENSE
  *
  * This source file is subject to the New BSD license that is bundled
@@ -12,24 +13,27 @@
  * obtain it through the world-wide-web, please send an email
  * to license@codepax.com so we can send you a copy immediately.
  * */
-
 /**
  * Sample config file
- * 
+ *
  * @category CodePax
  * @package Config
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  */
-
 /**
  * Project name as will appear in page
  * */
 define('PROJECT_NAME', 'Sample Project');
 
 /**
+ * Defines the versioning system : SVN/GIT
+ * */
+define('VERSIONING', 'SVN');
+
+/**
  * Takes the following values(lowercased): dev/stg/prod
- * 
+ *
  * Used especially for DB versioning module but
  * it will be used for further modules as well
  * */
@@ -61,29 +65,63 @@ define('SWITCH_TO_TRUNK', true);
 define('MERGED_BRANCH_MARKER', 'm_');
 
 /**
- * SVN user
+ * SCM user
  * */
-define('SVN_USER', 'xxxx');
+define('SCM_USER', 'xxxx');
 
 /**
- * SVN pass
+ * SCM pass
  * */
-define('SVN_PASS', 'yyyy');
+define('SCM_PASS', 'yyyy');
 
 /**
- * SVN url to repository
+ * SCM url to repository
  * */
-define('SVN_URL', 'https://svn.yoursite.com/');
+define('REPO_URL', '');
+
+/**
+ * Indicates the SCM prefix used for branches
+ * Examples:
+ * "branches/" for SVN
+ * "features/" for GIT
+ * */
+define('SCM_BRANCH_PREFIX', "branches/");
+
+/**
+ * Indicates the SCM line used as stable
+ * Example:
+ * "stable" for both SVN and GIT
+ * */
+define('SCM_STABLE_NAME', "stable");
+
+/**
+ * Indicates the SCM prefix used for tags
+ * Available only for SVN
+
+ * Examples:
+ * "tags/" for SVN
+ * */
+define('SCM_TAG_PREFIX', "tags/");
 
 /**
  * Full path to SVN binaries
- * 
+ *
  * This constant is OPTIONAL and the path is
  * assumed to be: /usr/bin/svn --config-dir=/tmp
- * 
+ *
  * When specified it will overwrite the default value
  * */
 define('PATH_TO_SVN_BIN', '/usr/bin/svn --config-dir=/tmp');
+
+/**
+ * Full path to GIT binaries
+ *
+ * This constant is OPTIONAL and the path is
+ * assumed to be: /usr/bin/git
+ *
+ * When specified it will overwrite the default value
+ * */
+define('PATH_TO_GIT_BIN', 'git');
 
 /**
  * Absolute path to project
@@ -114,7 +152,7 @@ define('DB_VERSIONING_DIR', 'dbv');
 
 /**
  * Path to SQL binaries
- * 
+ *
  * ATTENTION!
  * For Windows platform the specified path should be prepended with the command
  * for cmd.exe i.e. 'C:\WINDOWS\system32\cmd.exe /c '
@@ -123,7 +161,7 @@ define('PATH_TO_SQL_BIN', '/usr/bin/mysql');
 
 /**
  * Path to SQL dump binaries
- * 
+ *
  * ATTENTION!
  * For Windows platform the specified path should be prepended with the command
  * for cmd.exe i.e. 'C:\WINDOWS\system32\cmd.exe /c '
@@ -132,7 +170,7 @@ define('PATH_TO_SQL_DUMP_BIN', '/usr/bin/mysqldump');
 
 /**
  * Path to PostgreSQL service (eg. /etc/init.d/postgresql)
- * 
+ *
  * If the sql engine uses PostgreSQL than this constant has to be defined
  * */
 define('PATH_TO_POSTGRES_SERVICE', '/etc/init.d/postgresql');
@@ -166,13 +204,13 @@ define('DB_PASS', 'zzzz');
 /**
  * Indicates whether the compression will
  * be used or not for the test data file
- * 
+ *
  * If not provided "false" will be assumed
  * */
 define('USE_TEST_DATA_COMPRESSION', false);
 
 /**
- * Optional constat to indicate the name of 
+ * Optional constat to indicate the name of
  * the table(s) to ignore on data export,
  * separated by ,
  * */
