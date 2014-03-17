@@ -291,14 +291,19 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
      * */
     public function getBranchStatus()
     {
-        if (!$this->revision_status) {
+        $current_revision = $this->top_info['Revision'];
+        $stable_revision= $this->getStableRevision();
+
+        $revision_status = $current_revision-$stable_revision;
+
+        if ($revision_status == 0) {
             return false;
         }
 
         if ($this->revision_status > 0) {
-            return "This branch is  {$this->revision_status} revision(s) ahead of '" . SCM_STABLE_NAME . "'";
+            return "This branch is  {$revision_status } revision(s) ahead of '" . SCM_STABLE_NAME . "'";
         } else {
-            return "This branch is " . ($this->revision_status * -1) . " revision(s) behind '" . SCM_STABLE_NAME . "'";
+            return "This branch is " . ($revision_status * -1) . " revision(s) behind '" . SCM_STABLE_NAME . "'";
         }
     }
 
@@ -312,7 +317,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
     public function getRepoInfo()
     {
         //--- populate REPO info data
-        $top_markers = array('URL' => 'URL', 'Revision' => 'Revision', 'Last Changed Author' => 'Last changed');
+        $top_markers = array('URL' => 'URL', 'Last Changed Rev' => 'Revision', 'Last Changed Author' => 'Last changed');
 
         $repo_info = explode("\n", $this->svn_info);
         $markers_keys = array_keys($top_markers);
@@ -320,14 +325,6 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
             $colon_first_pos = strpos($info, ':');
             $info_key = trim(substr($info, 0, $colon_first_pos));
             $info_value = trim(substr($info, $colon_first_pos + 1));
-            //check if the working copy is set on a branch
-            //in order to calculate the branch revision against trunk/stable revision
-            if (is_numeric(strpos($info, "Relative URL: ^/" . SCM_BRANCH_PREFIX))) {
-                $stable_revision= $this->getStableRevision();
-                preg_match('/Last Changed Rev: (\d+)/', $this->svn_info, $matches);
-                list(,$current_revision) = $matches;
-                $this->revision_status = $current_revision-$stable_revision;
-            }
 
             if (in_array($info_key, $markers_keys)) {
                 $this->top_info[$top_markers[$info_key]] = $info_value;
@@ -335,6 +332,11 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
                 $this->more_info[$info_key] = $info_value;
             }
         }
+        //remove the Revision info from more_info array because
+        //this info shows the highest revision in the repo and not
+        //the current revision
+        unset($this->more_info['Revision']);
+
         return $this->svn_info;
     }
 
