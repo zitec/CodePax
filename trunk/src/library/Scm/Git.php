@@ -89,6 +89,8 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
             $this->path_to_git_bin = PATH_TO_GIT_BIN;
         }
 
+        $this->project_folder = $_project_folder;
+
         if ($this->is_windows) {
             $this->path_to_git_bin = "\"{$this->path_to_git_bin}\"";
             $this->project_folder = "\"{$_project_folder}\"";
