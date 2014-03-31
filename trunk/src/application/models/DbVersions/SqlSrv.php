@@ -53,7 +53,7 @@ class CodePax_DbVersions_SqlSrv extends CodePax_Sql implements CodePax_DbVersion
             $version_array['date_added'] = $version_array['date_added']->format('Y-m-d H:i:s');
         }
 
-        if ($_script_type == DBVersions::TYPE_CHANGE_SCRIPT) {
+        if ($_script_type == CodePax_DbVersions::TYPE_CHANGE_SCRIPT) {
             $_script_type = CodePax_DbVersions::TYPE_BASELINE;
             sqlsrv_execute($stmt);
             $baseline_version_array = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
