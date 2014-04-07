@@ -183,14 +183,13 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
                 array_pop($this->branches);
             }
 
-            //get the key for branch used as master
+            //get the key for the branch used as master
             $masterKey = array_search("origin/" . SCM_STABLE_NAME, $this->branches);
-            //get the key for branch defined as default
-            $headKey = array_search("origin/HEAD -> origin/" . SCM_STABLE_NAME, $this->branches);
             //remove the master from active branches
             unset($this->branches[$masterKey]);
+
             //remove the false HEAD branch
-            unset($this->branches[$headKey]);
+            $this->branches = preg_grep('/^origin\/HEAD/',$this->branches,1);
 
             foreach ($this->branches as $name) {
                 if (substr($name, 0, 9) == 'origin/' . MERGED_BRANCH_MARKER) {
@@ -286,7 +285,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
             shell_exec($shell_command);
 
             //update branch
-            return $this->updateCurrentBranch();
+            return $this->updateCurrentBranch($name);
         } else {
             $shell_command = "{$this->git_connection_string} checkout -b {$name} origin/" . $name . " " . self::GET_RESULT_DIRECTIVE;
             return shell_exec($shell_command);
@@ -295,12 +294,12 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
 
     /**
      * update the working branch
-     *
+     * @param string @name current branch
      * $return string
      */
-    public function updateCurrentBranch()
+    public function updateCurrentBranch($name)
     {
-        $update_command = "{$this->git_connection_string} pull" . self::GET_RESULT_DIRECTIVE;
+        $update_command = "{$this->git_connection_string} pull origin " . $name . self::GET_RESULT_DIRECTIVE;
         return shell_exec($update_command);
     }
 
