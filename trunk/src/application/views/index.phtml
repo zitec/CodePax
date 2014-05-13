@@ -3,6 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="css/style.css?v=<?php echo VERSION_NUMBER; ?>" />
+        <link rel="stylesheet" type="text/css" href="css/chosen.min.css?v=<?php echo VERSION_NUMBER; ?>" />
         <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
         <!--[if lte IE 9]>current_position
 
@@ -58,8 +59,7 @@
                     <div>
                         <?php if ($this->active_branches) { ?>
                             <form>
-                                <label>Active Branches:
-                                    <select id="select-active-branches">
+                                <label>Active Branches:<select id="select-active-branches">
                                         <option value="0">--- Choose a branch ---</option>
                                         <?php foreach ($this->active_branches as $active_branch) { ?>
                                             <option value="<?php echo $active_branch; ?>" <?php echo $this->current_position && $this->current_position == $active_branch ? 'selected="selected"' : ''; ?>><?php echo $active_branch; ?></option>
@@ -244,6 +244,9 @@
         <script src="js/scripts.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
 
         <script src="js/select.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
+
+        <script src="js/chosen.jquery.min.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
+
         <script src="js/animatedcollapse.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
         <script type="text/javascript">
                                     animatedcollapse.addDiv('slide-down-remote', 'fade=1,height=45px')
