@@ -24,7 +24,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_ConfigLoader {
+class CodePax_ConfigLoader
+{
 
     /**
      * @var CodePax_ConfigLoader
@@ -84,4 +85,5 @@ class CodePax_ConfigLoader {
     {
         return isset($this->config_data[$_key]) ? $this->config_data[$_key] : null;
     }
+
 }

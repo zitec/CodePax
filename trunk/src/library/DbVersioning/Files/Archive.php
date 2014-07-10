@@ -26,7 +26,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_Files_Archive {
+class CodePax_DbVersioning_Files_Archive
+{
 
     /**
      * Takes the input file and compress it with the
@@ -79,4 +80,5 @@ class CodePax_DbVersioning_Files_Archive {
             throw new CodePax_DbVersioning_Exception('Colud not un-compress file: source file is missing');
         }
     }
+
 }

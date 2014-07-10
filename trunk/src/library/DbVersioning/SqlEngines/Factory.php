@@ -27,7 +27,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_SqlEngines_Factory {
+class CodePax_DbVersioning_SqlEngines_Factory
+{
 
     /**
      * Generate the concrete DB instance
@@ -48,4 +49,5 @@ class CodePax_DbVersioning_SqlEngines_Factory {
                 throw new CodePax_DbVersioning_Exception('Unsupported SQL engine');
         }
     }
+
 }

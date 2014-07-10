@@ -2,8 +2,8 @@ function $_(eleid) {
     return document.getElementById(eleid);
 }
 window.onload = function() {
-    $("#select-active-branches").chosen({disable_search_threshold: 10, search_contains : true});
-    $("#select-merged-branches").chosen({disable_search_threshold: 10, search_contains : true});
+    $("#select-active-branches").chosen({disable_search_threshold: 10, search_contains: true});
+    $("#select-merged-branches").chosen({disable_search_threshold: 10, search_contains: true});
     $("#select-tags").chosen({disable_search_threshold: 10});
 
     if ($_("show-merged")) {
@@ -17,7 +17,7 @@ window.onload = function() {
         $_("hide-merged").onclick = function() {
             $_("show-merged").style.display = "block";
             $_("hide-merged").style.display = "none";
-        }        
+        }
     }
 
     if ($_("show-merged")) {

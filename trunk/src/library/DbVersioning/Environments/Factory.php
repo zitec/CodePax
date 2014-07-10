@@ -25,7 +25,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_Environments_Factory {
+class CodePax_DbVersioning_Environments_Factory
+{
 
     /**
      * Create the appropriate object by the
@@ -48,4 +49,5 @@ class CodePax_DbVersioning_Environments_Factory {
                 throw new CodePax_DbVersioning_Exception('Unsupported development environment');
         }
     }
+
 }

@@ -130,7 +130,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $parsed_url = parse_url(trim($remote_url));
 
         if (array_key_exists('user', $parsed_url) === false || array_key_exists('pass', $parsed_url) === false ||
-            $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
+                $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
         ) {
             $new_url = $parsed_url['scheme'] . '://' . $_git_user . ':' . $_git_pass . '@' . $parsed_url['host'] . $parsed_url['path'];
             $update_remote_url = $this->git_connection_string . ' remote set-url origin ' . $new_url . ' ' . self::GET_RESULT_DIRECTIVE;
@@ -173,7 +173,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      * */
     protected function setBranches()
     {
-        if (! empty($this->branches)) {
+        if (!empty($this->branches)) {
             return;
         }
         $this->branches = array(); // for safety
@@ -186,7 +186,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $branches = explode("\n", $response_string);
         foreach ($branches as $branch) {
             $branch = trim(trim($branch), "'");
-            if (! $branch || $branch == "origin/" . SCM_STABLE_NAME || $branch == "origin/HEAD") {
+            if (!$branch || $branch == "origin/" . SCM_STABLE_NAME || $branch == "origin/HEAD") {
                 continue;
             }
             $this->branches[] = $branch;
@@ -350,25 +350,23 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $current_branch = $this->getCurrentPosition();
 
         $this->top_info = array_merge(
-            $this->top_info,
-            array(
-                "Branch" => $current_branch,
-                "Revision" => $revisionString,
-                "Author" => $authorString,
-                "Last changed" => trim($lastDateString)
-            )
+                $this->top_info, array(
+            "Branch" => $current_branch,
+            "Revision" => $revisionString,
+            "Author" => $authorString,
+            "Last changed" => trim($lastDateString)
+                )
         );
         $this->more_info = array_merge(
-            $this->more_info,
-            array(
-                "Path" => $this->project_folder,
-                "Working Copy Root Path" => $this->project_folder,
-                //"Relative URL" => "^/branches/20130904_userdata_flow",
-                "Repository Root" => isset($this->top_info["URL"]) ? $this->top_info["URL"] : "",
-                //"Repository UUID" => "4f0209ba-6557-4861-b6de-cf4b6729d2b8",
-                "Node Kind" => "directory",
-                "Schedule" => "normal"
-            )
+                $this->more_info, array(
+            "Path" => $this->project_folder,
+            "Working Copy Root Path" => $this->project_folder,
+            //"Relative URL" => "^/branches/20130904_userdata_flow",
+            "Repository Root" => isset($this->top_info["URL"]) ? $this->top_info["URL"] : "",
+            //"Repository UUID" => "4f0209ba-6557-4861-b6de-cf4b6729d2b8",
+            "Node Kind" => "directory",
+            "Schedule" => "normal"
+                )
         );
 
         return $this->git_info;
@@ -468,4 +466,5 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
     {
         throw new Exception($message);
     }
+
 }

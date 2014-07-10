@@ -56,9 +56,9 @@ if (defined('USE_HOOKS') && USE_HOOKS === true && defined('HOOKS_DIR')) {
     $original_include_path = HOOKS_DIR . PATH_SEPARATOR . $original_include_path;
 }
 set_include_path(
-    APPLICATION_PATH . 'models'
-    . PATH_SEPARATOR . ROOT_PATH . 'library'
-    . PATH_SEPARATOR . $original_include_path
+        APPLICATION_PATH . 'models'
+        . PATH_SEPARATOR . ROOT_PATH . 'library'
+        . PATH_SEPARATOR . $original_include_path
 );
 
 function CodePaxAutoload($_class_name)
@@ -69,4 +69,5 @@ function CodePaxAutoload($_class_name)
     $class = str_replace('_', DIRECTORY_SEPARATOR, $_class_name) . '.php';
     include_once $class;
 }
+
 spl_autoload_register('CodePaxAutoload');

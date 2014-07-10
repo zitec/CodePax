@@ -21,7 +21,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_View {
+class CodePax_View
+{
 
     /**
      * The default extension for the view files is `phtml`. If for any reason
@@ -176,7 +177,7 @@ class CodePax_View {
     protected function _getPath()
     {
         $view_file = $this->_views_path . $this->_view . '.'
-            . self::VIEW_FILE_EXTENSION;
+                . self::VIEW_FILE_EXTENSION;
         return $view_file;
     }
 
@@ -194,4 +195,5 @@ class CodePax_View {
     {
         return '_' != substr($_name, 0, 1);
     }
+
 }

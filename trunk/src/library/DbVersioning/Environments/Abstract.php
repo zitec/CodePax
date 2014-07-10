@@ -23,7 +23,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-abstract class CodePax_DbVersioning_Environments_Abstract {
+abstract class CodePax_DbVersioning_Environments_Abstract
+{
 
     /**
      * Latest structure version
@@ -217,4 +218,5 @@ abstract class CodePax_DbVersioning_Environments_Abstract {
             }
         }
     }
+
 }
