@@ -383,8 +383,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
      * */
     public function add($_path)
     {
-        $shell_command = "cd {
-                $this->project_folder}" . $this->command_separator;
+        $shell_command = "cd {$this->project_folder}" . $this->command_separator;
         $shell_command .= "echo p |{
                 $this->path_to_svn_bin} --force add {
                 $_path} " . self::GET_RESULT_DIRECTIVE;
@@ -399,8 +398,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
      * */
     public function commit($_message)
     {
-        $shell_command = "cd {
-                $this->project_folder}" . $this->command_separator;
+        $shell_command = "cd {$this->project_folder}" . $this->command_separator;
         $shell_command .= "echo p |{
                 $this->svn_connection_string} commit--message \"{
                 $_message}\" " . self::GET_RESULT_DIRECTIVE;
