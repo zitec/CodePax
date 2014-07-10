@@ -276,6 +276,7 @@ select {
 #select-active-branches {
     margin-left: 22px;
 }
+
 #select-merged-branches {
     margin-left: 13px;
 }
@@ -309,7 +310,7 @@ input[type *=text] {
 
 input[type *=text] {
     padding: 5px 10px 5px 10px;
-    height: 15px;
+    height: 15px !important;
 }
 
 input[value *= Switch] {

@@ -173,27 +173,30 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      * */
     protected function setBranches()
     {
-        if (! empty($this->branches)) {
-            return;
-        }
-        $this->branches = array(); // for safety
-        $this->active_branches = array();
-        $this->merged_branches = array();
+        if (empty($this->branches)) {
+            $shell_command = "{$this->git_connection_string} branch -r " . self::GET_RESULT_DIRECTIVE;
+            $response_string = shell_exec($shell_command);
 
-        $shell_command = "{$this->git_connection_string} for-each-ref --count=50 --sort=-committerdate refs/remotes/ --format='%(refname:short)'" . self::GET_RESULT_DIRECTIVE;
-        $response_string = shell_exec($shell_command);
-
-        $branches = explode("\n", $response_string);
-        foreach ($branches as $branch) {
-            $branch = trim(trim($branch), "'");
-            if (! $branch || $branch == "origin/" . SCM_STABLE_NAME || $branch == "origin/HEAD") {
-                continue;
+            $this->branches = array_map('trim', explode("\n", $response_string));
+            //--- pop the last value since it is empty
+            if (count($this->branches) > 1) {
+                array_pop($this->branches);
             }
-            $this->branches[] = $branch;
-            if (substr($branch, 0, 9) == 'origin/' . MERGED_BRANCH_MARKER) {
-                $this->merged_branches[] = trim(str_replace('origin/', '', $branch));
-            } else {
-                $this->active_branches[] = trim(str_replace('origin/', '', $branch));
+
+            //get the key for the branch used as master
+            $masterKey = array_search("origin/" . SCM_STABLE_NAME, $this->branches);
+            //remove the master from active branches
+            unset($this->branches[$masterKey]);
+
+            //remove the false HEAD branch
+            $this->branches = preg_grep('/^origin\/HEAD/',$this->branches,1);
+
+            foreach ($this->branches as $name) {
+                if (substr($name, 0, 9) == 'origin/' . MERGED_BRANCH_MARKER) {
+                    $this->merged_branches[] = trim(str_replace('origin/', '', $name));
+                } else {
+                    $this->active_branches[] = trim(str_replace('origin/', '', $name));
+                }
             }
         }
     }

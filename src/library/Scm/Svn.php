@@ -292,9 +292,9 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
     public function getBranchStatus()
     {
         $current_revision = $this->top_info['Revision'];
-        $stable_revision = $this->getStableRevision();
+        $stable_revision= $this->getStableRevision();
 
-        $revision_status = intval($current_revision - $stable_revision);
+        $revision_status = intval($current_revision-$stable_revision);
 
         if ($revision_status == 0) {
             return false;
@@ -408,17 +408,17 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
         return shell_exec($shell_command);
     }
 
-    /**
-     * Add a file to repo and then commit it
-     *
-     * @param string $_message commit message
-     * @param string $_path
-     * @return string
-     * */
-    public function addAndCommit($_message, $_path)
-    {
-        $this->add($_path);
-        return $this->commit($_message);
+        /**
+         * Add a file to repo and then commit it
+         *
+         * @param string $_message commit message
+         * @param string $_path
+         * @return string
+         * */
+        public
+        function addAndCommit($_message, $_path)
+        {
+            $this->add($_path);
+            return $this->commit($_message);
+        }
     }
-
-}
