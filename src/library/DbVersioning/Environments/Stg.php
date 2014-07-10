@@ -124,7 +124,7 @@ class CodePax_DbVersioning_Environments_Stg extends CodePax_DbVersioning_Environ
         $this->db_versions_model->addVersion($baseline_version, CodePax_DbVersions::TYPE_BASELINE);
 
         // commit the new baseline and versioning DB
-        $svn_wrapper = new CodePax_Svn_Wrapper(SVN_USER, SVN_PASS, SVN_URL, PROJECT_DIR);
+        $svn_wrapper = new CodePax_Scm_Svn(SVN_USER, SVN_PASS, SVN_URL, PROJECT_DIR);
         $svn_wrapper->addAndCommit("SVN GUI generated baseline at version {$baseline_version}", DB_VERSIONING_DIR);
     }
 }

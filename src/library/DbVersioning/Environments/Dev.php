@@ -42,7 +42,7 @@ class CodePax_DbVersioning_Environments_Dev extends CodePax_DbVersioning_Environ
         $this->sql_engine->generateTestData(CodePax_DbVersioning_Files_Manager::getTestDataFile());
         // commit the new test data
         if (defined('SVN_USER')) {
-            $svn_wrapper = new CodePax_Svn_Wrapper(SVN_USER, SVN_PASS, SVN_URL, PROJECT_DIR);
+            $svn_wrapper = new CodePax_Scm_Svn(SVN_USER, SVN_PASS, SVN_URL, PROJECT_DIR);
             $svn_wrapper->commit("SVN GUI generated test data file", DB_VERSIONING_DIR);
         }
     }
