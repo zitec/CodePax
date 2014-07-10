@@ -23,7 +23,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_Files_Manager {
+class CodePax_DbVersioning_Files_Manager
+{
 
     /**
      * Extension used for change scripts
@@ -68,7 +69,7 @@ class CodePax_DbVersioning_Files_Manager {
     public static function getBaselineByVersion($_version)
     {
         $baseline_path = sprintf(self::$baselines_path, PROJECT_DIR, DB_VERSIONING_DIR, DIRECTORY_SEPARATOR)
-            . DIRECTORY_SEPARATOR . $_version . self::SQL_FILE_EXTENSION;
+                . DIRECTORY_SEPARATOR . $_version . self::SQL_FILE_EXTENSION;
         if (is_file($baseline_path)) {
             return $baseline_path;
         } else {
@@ -210,4 +211,5 @@ class CodePax_DbVersioning_Files_Manager {
     {
         return sprintf(self::$baselines_path, PROJECT_DIR, DB_VERSIONING_DIR, DIRECTORY_SEPARATOR);
     }
+
 }

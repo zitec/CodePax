@@ -29,7 +29,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersions {
+class CodePax_DbVersions
+{
 
     const TABLE_NAME = 'z_db_versions';
     const VERSION_ATTRIBUTE = 'version';
@@ -44,7 +45,7 @@ class CodePax_DbVersions {
      * */
     private function __construct()
     {
-
+        
     }
 
     /**
@@ -116,4 +117,5 @@ class CodePax_DbVersions {
             return version_compare($_version_array[self::VERSION_ATTRIBUTE], $_baseline_version_array[self::VERSION_ATTRIBUTE]) == -1 ? $_baseline_version_array : $_version_array;
         }
     }
+
 }

@@ -23,7 +23,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-abstract class CodePax_DbVersioning_SqlEngines_Abstract {
+abstract class CodePax_DbVersioning_SqlEngines_Abstract
+{
 
     const COMMAND_OUTPUT_FILE_FORMAT = 'CodePax-%s-%s.log';
     const COMMAND_OUTPUT_LINES = 10;
@@ -340,4 +341,5 @@ abstract class CodePax_DbVersioning_SqlEngines_Abstract {
         }
         return implode(' ', $return_command);
     }
+
 }

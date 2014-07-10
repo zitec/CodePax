@@ -24,7 +24,8 @@
  * @copyright Copyright (c) 2013 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_Scm_Factory {
+class CodePax_Scm_Factory
+{
 
     /**
      * Create the appropriate object by the
@@ -45,4 +46,5 @@ class CodePax_Scm_Factory {
                 throw new CodePax_Scm_Exception('Unsupported version control system');
         }
     }
+
 }

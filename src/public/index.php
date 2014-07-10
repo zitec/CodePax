@@ -35,8 +35,8 @@ try {
         $response_string = null;
         //--- switch to branch
         if (isset($_GET['branch']) && strlen($_GET['branch']) > 1 && defined(
-                'SWITCH_TO_BRANCH'
-            ) && SWITCH_TO_BRANCH === true
+                        'SWITCH_TO_BRANCH'
+                ) && SWITCH_TO_BRANCH === true
         ) {
             $response_string = $repo_wrapper->switchToBranch($_GET['branch']);
         }
@@ -100,13 +100,12 @@ if (defined('SWITCH_TO_REVISION') && SWITCH_TO_REVISION === true) {
 }
 
 if (VERSIONING == 'SVN' &&
-    !empty($response_string) &&
-    is_numeric(
-        strpos(
-            strtolower($response_string),
-            "run 'svn cleanup' to remove locks (type 'svn help cleanup' for details)"
+        !empty($response_string) &&
+        is_numeric(
+                strpos(
+                        strtolower($response_string), "run 'svn cleanup' to remove locks (type 'svn help cleanup' for details)"
+                )
         )
-    )
 ) {
     $view->working_copy_locked = true;
 }
@@ -129,9 +128,8 @@ if (defined('USE_DB_VERSIONING') && USE_DB_VERSIONING === true) {
         if (in_array(APPLICATION_ENVIRONMENT, array('dev', 'prod'))) {
             $latest_baseline_file = CodePax_DbVersioning_Files_Manager::getLatestBaselineVersion();
             if (!$db_versions_model->checkIsVersionRegistred(
-                $latest_baseline_file,
-                CodePax_DbVersions::TYPE_BASELINE
-            )
+                            $latest_baseline_file, CodePax_DbVersions::TYPE_BASELINE
+                    )
             ) {
                 $db_versions_model->addVersion($latest_baseline_file, CodePax_DbVersions::TYPE_BASELINE);
             }
@@ -154,9 +152,8 @@ if (defined('USE_DB_VERSIONING') && USE_DB_VERSIONING === true) {
         $new_baseline_available = false;
         if (in_array(APPLICATION_ENVIRONMENT, array('dev', 'prod'))) {
             $new_baseline_available = (version_compare(
-                    $latest_structure_version[CodePax_DbVersions::VERSION_ATTRIBUTE],
-                    $db_versioning_handler->getLatestBaselineVersion()
-                ) == -1);
+                            $latest_structure_version[CodePax_DbVersions::VERSION_ATTRIBUTE], $db_versioning_handler->getLatestBaselineVersion()
+                    ) == -1);
         }
 
         // database is up-to-date

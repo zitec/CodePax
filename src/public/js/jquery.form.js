@@ -17,7 +17,7 @@
      Do not use both ajaxSubmit and ajaxForm on the same form.  These
      functions are intended to be exclusive.  Use ajaxSubmit if you want
      to bind your own submit handler to the form.  For example,
-
+     
      $(document).ready(function() {
      $('#myForm').bind('submit', function() {
      $(this).ajaxSubmit({
@@ -26,16 +26,16 @@
      return false; // <-- important!
      });
      });
-
+     
      Use ajaxForm when you want the plugin to manage all the event binding
      for you.  For example,
-
+     
      $(document).ready(function() {
      $('#myForm').ajaxForm({
      target: '#output'
      });
      });
-
+     
      When using ajaxForm, the ajaxSubmit function will be invoked for you
      at the appropriate time.
      */

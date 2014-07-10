@@ -29,7 +29,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_Environments_Dev extends CodePax_DbVersioning_Environments_Abstract {
+class CodePax_DbVersioning_Environments_Dev extends CodePax_DbVersioning_Environments_Abstract
+{
 
     /**
      * Generate the test data, which is basically a DB dump
@@ -42,7 +43,7 @@ class CodePax_DbVersioning_Environments_Dev extends CodePax_DbVersioning_Environ
         $this->sql_engine->generateTestData(CodePax_DbVersioning_Files_Manager::getTestDataFile());
         // commit the new test data
         if (defined('SVN_USER')) {
-            $svn_wrapper = new CodePax_Scm_Svn(SCM_USER, SCM_PASS, REPO_URL, PROJECT_DIR);            
+            $svn_wrapper = new CodePax_Scm_Svn(SCM_USER, SCM_PASS, REPO_URL, PROJECT_DIR);
             $svn_wrapper->commit("SVN GUI generated test data file", DB_VERSIONING_DIR);
         }
     }
@@ -193,4 +194,5 @@ class CodePax_DbVersioning_Environments_Dev extends CodePax_DbVersioning_Environ
     {
         return $this->latest_db_version;
     }
+
 }

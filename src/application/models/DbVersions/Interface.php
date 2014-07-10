@@ -27,7 +27,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-interface CodePax_DbVersions_Interface {
+interface CodePax_DbVersions_Interface
+{
 
     /**
      * Return the current DB version which can be

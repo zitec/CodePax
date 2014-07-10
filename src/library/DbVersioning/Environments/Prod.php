@@ -25,7 +25,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_Environments_Prod extends CodePax_DbVersioning_Environments_Abstract {
+class CodePax_DbVersioning_Environments_Prod extends CodePax_DbVersioning_Environments_Abstract
+{
 
     /**
      * Set the latest database version to an internal
@@ -83,4 +84,5 @@ class CodePax_DbVersioning_Environments_Prod extends CodePax_DbVersioning_Enviro
     {
         return $this->latest_db_version;
     }
+
 }

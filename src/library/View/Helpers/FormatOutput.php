@@ -61,11 +61,9 @@ class CodePax_View_Helpers_FormatOutput
     {
         $input_lines = explode("\n", $_input_string);
         return implode(
-            "\n",
-            array_map(
-                array('CodePax_View_Helpers_FormatOutput', 'formatLines'),
-                $input_lines
-            )
+                "\n", array_map(
+                        array('CodePax_View_Helpers_FormatOutput', 'formatLines'), $input_lines
+                )
         );
     }
 
@@ -94,4 +92,5 @@ class CodePax_View_Helpers_FormatOutput
 
         return "<div class=\"{$class}\">{$branch_status}</div>";
     }
+
 }

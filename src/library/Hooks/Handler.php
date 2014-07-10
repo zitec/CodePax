@@ -22,7 +22,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_Hooks_Handler {
+class CodePax_Hooks_Handler
+{
 
     protected $hooks_allowed = false;
     protected $hooks = array();
@@ -101,4 +102,5 @@ class CodePax_Hooks_Handler {
     {
         return $this->hooks_output;
     }
+
 }

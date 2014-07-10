@@ -24,7 +24,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_SqlEngines_PgSql extends CodePax_DbVersioning_SqlEngines_Abstract {
+class CodePax_DbVersioning_SqlEngines_PgSql extends CodePax_DbVersioning_SqlEngines_Abstract
+{
 
     /**
      * Executes the given SQL file
@@ -152,4 +153,5 @@ class CodePax_DbVersioning_SqlEngines_PgSql extends CodePax_DbVersioning_SqlEngi
         $shell_command = sprintf($command_pattern, $pg_restore, DB_HOST, DB_USER, DB_NAME, $_sql_file);
         $this->runCommand($shell_command);
     }
+
 }

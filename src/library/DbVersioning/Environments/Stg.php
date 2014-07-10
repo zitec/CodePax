@@ -29,7 +29,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_Environments_Stg extends CodePax_DbVersioning_Environments_Abstract {
+class CodePax_DbVersioning_Environments_Stg extends CodePax_DbVersioning_Environments_Abstract
+{
 
     /**
      * Set the latest database structure version to an internal
@@ -115,7 +116,7 @@ class CodePax_DbVersioning_Environments_Stg extends CodePax_DbVersioning_Environ
 
         // generate baseline path
         $baseline_absolute_path = CodePax_DbVersioning_Files_Manager::getPathToBaselines() .
-            DIRECTORY_SEPARATOR . $baseline_version . CodePax_DbVersioning_Files_Manager::SQL_FILE_EXTENSION;
+                DIRECTORY_SEPARATOR . $baseline_version . CodePax_DbVersioning_Files_Manager::SQL_FILE_EXTENSION;
 
         // factory the SQL engine object and generate baseline file
         $this->sql_engine->generateBaseline($baseline_absolute_path);
@@ -127,4 +128,5 @@ class CodePax_DbVersioning_Environments_Stg extends CodePax_DbVersioning_Environ
         $svn_wrapper = new CodePax_Scm_Svn(SCM_USER, SCM_PASS, REPO_URL, PROJECT_DIR);
         $svn_wrapper->addAndCommit("SVN GUI generated baseline at version {$baseline_version}", DB_VERSIONING_DIR);
     }
+
 }

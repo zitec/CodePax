@@ -24,7 +24,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_SqlEngines_SqlSrv extends CodePax_DbVersioning_SqlEngines_Abstract {
+class CodePax_DbVersioning_SqlEngines_SqlSrv extends CodePax_DbVersioning_SqlEngines_Abstract
+{
 
     const TARGETED_SQL_VERSION = '2008';
     const COMMAND_SET_NOCOUNT_ON = 'SET NOCOUNT ON';
@@ -243,4 +244,5 @@ class CodePax_DbVersioning_SqlEngines_SqlSrv extends CodePax_DbVersioning_SqlEng
             $this->runCommand($drop_shell_command);
         }
     }
+
 }

@@ -23,7 +23,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersions_PgSql extends CodePax_Sql implements CodePax_DbVersions_Interface {
+class CodePax_DbVersions_PgSql extends CodePax_Sql implements CodePax_DbVersions_Interface
+{
 
     /**
      * Return the current DB version which can be
@@ -96,7 +97,7 @@ class CodePax_DbVersions_PgSql extends CodePax_Sql implements CodePax_DbVersions
     public function getAll()
     {
         $query = $this->db->prepare('SELECT * FROM ' . CodePax_DbVersions::TABLE_NAME
-            . ' ORDER BY date_added DESC');
+                . ' ORDER BY date_added DESC');
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -121,4 +122,5 @@ class CodePax_DbVersions_PgSql extends CodePax_Sql implements CodePax_DbVersions
         $result = $query->fetchColumn();
         return ($result > 0);
     }
+
 }

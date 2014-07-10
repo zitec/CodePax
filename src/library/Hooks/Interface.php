@@ -23,7 +23,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-interface CodePax_Hooks_Interface {
+interface CodePax_Hooks_Interface
+{
 
     /**
      * Executes the hook

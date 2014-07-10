@@ -23,7 +23,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_Sql {
+class CodePax_Sql
+{
 
     /**
      * @var PDO
@@ -41,15 +42,16 @@ class CodePax_Sql {
         switch (DB_ENGINE) {
             case 'mysql':
                 $this->db = new PDO(
-                    sprintf('mysql:host=%s;dbname=%s', DB_HOST, DB_NAME), DB_USER, DB_PASS);
+                        sprintf('mysql:host=%s;dbname=%s', DB_HOST, DB_NAME), DB_USER, DB_PASS);
                 break;
             case 'pgsql':
                 $this->db = new PDO(
-                    sprintf('pgsql:host=%s;port=5432;dbname=%s', DB_HOST, DB_NAME), DB_USER, DB_PASS);
+                        sprintf('pgsql:host=%s;port=5432;dbname=%s', DB_HOST, DB_NAME), DB_USER, DB_PASS);
                 break;
             case 'sqlsrv':
                 $this->db = sqlsrv_connect(DB_HOST, array("Database" => DB_NAME, 'UID' => DB_USER, 'PWD' => DB_PASS, 'ConnectionPooling' => 0));
                 break;
         }
     }
+
 }

@@ -24,7 +24,8 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_DbVersioning_SqlEngines_MySql extends CodePax_DbVersioning_SqlEngines_Abstract {
+class CodePax_DbVersioning_SqlEngines_MySql extends CodePax_DbVersioning_SqlEngines_Abstract
+{
 
     /**
      * Executes the given SQL file
@@ -142,4 +143,5 @@ class CodePax_DbVersioning_SqlEngines_MySql extends CodePax_DbVersioning_SqlEngi
     {
         $this->executeChangeScript($_sql_file);
     }
+
 }

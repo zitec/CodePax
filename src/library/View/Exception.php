@@ -23,6 +23,7 @@
  * @copyright Copyright (c) 2012 Zitec COM srl, Romania
  * @license New BSD http://www.codepax.com/license.html
  * */
-class CodePax_View_Exception extends Exception {
-
+class CodePax_View_Exception extends Exception
+{
+    
 }
