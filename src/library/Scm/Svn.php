@@ -384,9 +384,7 @@ class CodePax_Scm_Svn extends CodePax_Scm_Abstract
     public function add($_path)
     {
         $shell_command = "cd {$this->project_folder}" . $this->command_separator;
-        $shell_command .= "echo p |{
-                $this->path_to_svn_bin} --force add {
-                $_path} " . self::GET_RESULT_DIRECTIVE;
+        $shell_command .= "echo p |{$this->path_to_svn_bin} --force add {$_path} " . self::GET_RESULT_DIRECTIVE;
         return shell_exec($shell_command);
     }
 
