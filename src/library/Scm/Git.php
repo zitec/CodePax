@@ -100,8 +100,10 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
 
         $this->checkLocalConfig();
 
-        $this->checkRemoteConfig($_git_user, $_git_pass);
-
+        if (!defined(GIT_PROTOCOL) || (defined(GIT_PROTOCOL) && GIT_PROTOCOL != 'HTTPS')) {
+            $this->checkRemoteConfig($_git_user, $_git_pass, $_git_url);
+        }
+        
         $this->remoteUpdate();
 
         //--- set repository info
@@ -119,10 +121,11 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      *
      * @param string $_git_user scm username
      * @param string $_git_pass
+     * @param string $_git_url
      *
      * @return void
      * */
-    protected function checkRemoteConfig($_git_user, $_git_pass)
+    protected function checkRemoteConfig($_git_user, $_git_pass, $_git_url)
     {
 
         $shell_command_update = $this->git_connection_string . ' config remote.origin.url ' . self::GET_RESULT_DIRECTIVE;
@@ -132,7 +135,8 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         if (array_key_exists('user', $parsed_url) === false || array_key_exists('pass', $parsed_url) === false ||
                 $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
         ) {
-            $new_url = $parsed_url['scheme'] . '://' . $_git_user . ':' . $_git_pass . '@' . $parsed_url['host'] . $parsed_url['path'];
+            $configRepo = parse_url($_git_url);
+            $new_url = $configRepo['scheme'] . '://' . $_git_user . ':' . $_git_pass . '@' . $configRepo['host'] . $configRepo['path'];
             $update_remote_url = $this->git_connection_string . ' remote set-url origin ' . $new_url . ' ' . self::GET_RESULT_DIRECTIVE;
 
             shell_exec($update_remote_url);

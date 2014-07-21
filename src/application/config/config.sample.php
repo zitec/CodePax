@@ -32,6 +32,13 @@ define('PROJECT_NAME', 'Sample Project');
 define('VERSIONING', 'SVN');
 
 /**
+ * Define the git protocol to be used
+ * Currently accepted: SSH and HTTPS
+ * 
+ * */
+define('GIT_PROTOCOL', 'HTTPS');
+
+/**
  * Takes the following values(lowercased): dev/stg/prod
  *
  * Used especially for DB versioning module but
