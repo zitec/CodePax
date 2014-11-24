@@ -312,7 +312,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      * */
     public function switchToTag($name)
     {
-        return self::switchToRemoteBranch($name);
+        return self::switchToBranch($name);
     }
 
     /**
