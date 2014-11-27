@@ -313,7 +313,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
     public function switchToTag($name)
     {
         $shell_command = "{$this->git_connection_string} checkout tags/{$name} " . self::GET_RESULT_DIRECTIVE;
-        shell_exec($shell_command);
+        return shell_exec($shell_command);
     }
 
     /**
