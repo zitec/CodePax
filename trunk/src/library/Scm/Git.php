@@ -103,7 +103,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         if (!defined('GIT_PROTOCOL') || (defined('GIT_PROTOCOL') && GIT_PROTOCOL != 'HTTPS')) {
             $this->checkRemoteConfig($_git_user, $_git_pass, $_git_url);
         }
-        
+
         $this->remoteUpdate();
 
         //--- set repository info
@@ -133,7 +133,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $parsed_url = parse_url(trim($remote_url));
 
         if (array_key_exists('user', $parsed_url) === false || array_key_exists('pass', $parsed_url) === false ||
-                $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
+            $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
         ) {
             $configRepo = parse_url($_git_url);
             $new_url = $configRepo['scheme'] . '://' . $_git_user . ':' . $_git_pass . '@' . $configRepo['host'] . $configRepo['path'];
@@ -148,7 +148,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      */
     protected function remoteUpdate()
     {
-        $shell_command_update = "cd \"{$this->project_folder}\" ;" . $this->path_to_git_bin . ' remote update ' . self::GET_RESULT_DIRECTIVE;
+        $shell_command_update = "cd {$this->project_folder} {$this->command_separator}" . $this->path_to_git_bin . ' remote update ' . self::GET_RESULT_DIRECTIVE;
         $update_response = shell_exec($shell_command_update);
 
         if (is_numeric(strpos($update_response, "error: Could not"))) {
@@ -279,7 +279,6 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
     public function switchToBranch($name)
     {
         $this->getLocalBranches();
-
         if (in_array($name, $this->local_branches)) {
             // switch to branch
             $shell_command = "{$this->git_connection_string} checkout {$name} " . self::GET_RESULT_DIRECTIVE;
@@ -288,6 +287,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
             //update branch
             return $this->updateCurrentBranch($name);
         } else {
+
             $shell_command = "{$this->git_connection_string} checkout -b {$name} origin/" . $name . " " . self::GET_RESULT_DIRECTIVE;
             return shell_exec($shell_command);
         }
@@ -332,9 +332,10 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      * @param int $_revision_no revision to switch to
      * @return string
      * */
-    public function switchToRevision($_revision_no = null)
+    public function switchToRevision($revision = null)
     {
-        return self::switchToBranch($_revision_no);
+        $shell_command = "{$this->git_connection_string} checkout {$revision} " . self::GET_RESULT_DIRECTIVE;
+        shell_exec($shell_command);
     }
 
     /**
@@ -355,23 +356,23 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $current_branch = $this->getCurrentPosition();
 
         $this->top_info = array_merge(
-                $this->top_info, array(
-            "Branch" => $current_branch,
-            "Revision" => $revisionString,
-            "Author" => $authorString,
-            "Last changed" => trim($lastDateString)
-                )
+            $this->top_info, array(
+                "Branch" => $current_branch,
+                "Revision" => $revisionString,
+                "Author" => $authorString,
+                "Last changed" => trim($lastDateString)
+            )
         );
         $this->more_info = array_merge(
-                $this->more_info, array(
-            "Path" => $this->project_folder,
-            "Working Copy Root Path" => $this->project_folder,
-            //"Relative URL" => "^/branches/20130904_userdata_flow",
-            "Repository Root" => isset($this->top_info["URL"]) ? $this->top_info["URL"] : "",
-            //"Repository UUID" => "4f0209ba-6557-4861-b6de-cf4b6729d2b8",
-            "Node Kind" => "directory",
-            "Schedule" => "normal"
-                )
+            $this->more_info, array(
+                "Path" => $this->project_folder,
+                "Working Copy Root Path" => $this->project_folder,
+                //"Relative URL" => "^/branches/20130904_userdata_flow",
+                "Repository Root" => isset($this->top_info["URL"]) ? $this->top_info["URL"] : "",
+                //"Repository UUID" => "4f0209ba-6557-4861-b6de-cf4b6729d2b8",
+                "Node Kind" => "directory",
+                "Schedule" => "normal"
+            )
         );
 
         return $this->git_info;
@@ -424,7 +425,14 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
     public function getCurrentPosition()
     {
         $shell_command = "{$this->git_connection_string} rev-parse --abbrev-ref HEAD " . self::GET_RESULT_DIRECTIVE;
-        return trim(shell_exec($shell_command));
+        $output = trim(shell_exec($shell_command));
+        //if the output is HEAD, that means is a tag
+        if ($output == "HEAD") {
+            $shell_command = "{$this->git_connection_string} name-rev --tags --name-only HEAD " . self::GET_RESULT_DIRECTIVE;
+            $output = trim(shell_exec($shell_command));
+        }
+
+        return $output;
     }
 
     /**
