@@ -133,7 +133,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $parsed_url = parse_url(trim($remote_url));
 
         if (array_key_exists('user', $parsed_url) === false || array_key_exists('pass', $parsed_url) === false ||
-            $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
+                $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
         ) {
             $configRepo = parse_url($_git_url);
             $new_url = $configRepo['scheme'] . '://' . $_git_user . ':' . $_git_pass . '@' . $configRepo['host'] . $configRepo['path'];
@@ -334,8 +334,13 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      * */
     public function switchToRevision($revision = null)
     {
+        if ($revision == null) {
+            $current = $this->getCurrentPosition();
+            $this->updateCurrentBranch($current);
+        }
+
         $shell_command = "{$this->git_connection_string} checkout {$revision} " . self::GET_RESULT_DIRECTIVE;
-        shell_exec($shell_command);
+        return shell_exec($shell_command);
     }
 
     /**
@@ -356,23 +361,23 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $current_branch = $this->getCurrentPosition();
 
         $this->top_info = array_merge(
-            $this->top_info, array(
-                "Branch" => $current_branch,
-                "Revision" => $revisionString,
-                "Author" => $authorString,
-                "Last changed" => trim($lastDateString)
-            )
+                $this->top_info, array(
+            "Branch" => $current_branch,
+            "Revision" => $revisionString,
+            "Author" => $authorString,
+            "Last changed" => trim($lastDateString)
+                )
         );
         $this->more_info = array_merge(
-            $this->more_info, array(
-                "Path" => $this->project_folder,
-                "Working Copy Root Path" => $this->project_folder,
-                //"Relative URL" => "^/branches/20130904_userdata_flow",
-                "Repository Root" => isset($this->top_info["URL"]) ? $this->top_info["URL"] : "",
-                //"Repository UUID" => "4f0209ba-6557-4861-b6de-cf4b6729d2b8",
-                "Node Kind" => "directory",
-                "Schedule" => "normal"
-            )
+                $this->more_info, array(
+            "Path" => $this->project_folder,
+            "Working Copy Root Path" => $this->project_folder,
+            //"Relative URL" => "^/branches/20130904_userdata_flow",
+            "Repository Root" => isset($this->top_info["URL"]) ? $this->top_info["URL"] : "",
+            //"Repository UUID" => "4f0209ba-6557-4861-b6de-cf4b6729d2b8",
+            "Node Kind" => "directory",
+            "Schedule" => "normal"
+                )
         );
 
         return $this->git_info;
