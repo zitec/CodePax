@@ -100,7 +100,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
 
         $this->checkLocalConfig();
 
-        if (!defined('GIT_PROTOCOL') || (defined('GIT_PROTOCOL') && GIT_PROTOCOL != 'HTTPS')) {
+        if (!defined('GIT_PROTOCOL') || (defined('GIT_PROTOCOL') && GIT_PROTOCOL != 'HTTPS') || GIT_REMOTE_NAME != 'origin') {
             $this->checkRemoteConfig($_git_user, $_git_pass, $_git_url);
         }
 
@@ -207,7 +207,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $this->active_branches = array();
         $this->merged_branches = array();
 
-        $shell_command = "{$this->git_connection_string} for-each-ref --count=50 --sort=-committerdate refs/remotes/ --format='%(refname:short)'" . self::GET_RESULT_DIRECTIVE;
+        $shell_command = "{$this->git_connection_string} for-each-ref --count=50 --sort=-committerdate refs/remotes/" . SCM_REMOTE_NAME . " --format='%(refname:short)'" . self::GET_RESULT_DIRECTIVE;
         $response_string = shell_exec($shell_command);
 
         $branches = explode("\n", $response_string);
@@ -217,7 +217,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
                 continue;
             }
             $this->branches[] = $branch;
-            if (substr($branch, 0, 9) == SCM_REMOTE_NAME . '/' . MERGED_BRANCH_MARKER) {
+            if (strpos($branch, SCM_REMOTE_NAME . '/' . MERGED_BRANCH_MARKER) === 0) {
                 $this->merged_branches[] = trim(str_replace(SCM_REMOTE_NAME . '/', '', $branch));
             } else {
                 $this->active_branches[] = trim(str_replace(SCM_REMOTE_NAME . '/', '', $branch));
