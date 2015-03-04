@@ -116,7 +116,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
     }
 
     /**
-     * Check if the origin url contains username and password
+     * Check if the remote url contains username and password
      * If not, create new url with username and password
      *
      * @param string $_git_user scm username
@@ -128,7 +128,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
     protected function checkRemoteConfig($_git_user, $_git_pass, $_git_url)
     {
 
-        $shell_command_update = $this->git_connection_string . ' config remote.origin.url ' . self::GET_RESULT_DIRECTIVE;
+        $shell_command_update = $this->git_connection_string . ' config remote.' . SCM_REMOTE_NAME . '.url ' . self::GET_RESULT_DIRECTIVE;
         $remote_url = shell_exec($shell_command_update);
         $parsed_url = parse_url(trim($remote_url));
 
@@ -137,14 +137,14 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         ) {
             $configRepo = parse_url($_git_url);
             $new_url = $configRepo['scheme'] . '://' . $_git_user . ':' . $_git_pass . '@' . $configRepo['host'] . $configRepo['path'];
-            $update_remote_url = $this->git_connection_string . ' remote set-url origin ' . $new_url . ' ' . self::GET_RESULT_DIRECTIVE;
+            $update_remote_url = $this->git_connection_string . ' remote set-url ' . SCM_REMOTE_NAME . ' ' . $new_url . ' ' . self::GET_RESULT_DIRECTIVE;
 
             shell_exec($update_remote_url);
         }
     }
 
     /**
-     * Fetch updates from remote origin
+     * Fetch updates from remote
      */
     protected function remoteUpdate()
     {
@@ -190,14 +190,14 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $branches = explode("\n", $response_string);
         foreach ($branches as $branch) {
             $branch = trim(trim($branch), "'");
-            if (!$branch || $branch == "origin/" . SCM_STABLE_NAME || $branch == "origin/HEAD") {
+            if (!$branch || $branch == SCM_REMOTE_NAME . "/" . SCM_STABLE_NAME || $branch == SCM_REMOTE_NAME . "/HEAD") {
                 continue;
             }
             $this->branches[] = $branch;
-            if (substr($branch, 0, 9) == 'origin/' . MERGED_BRANCH_MARKER) {
-                $this->merged_branches[] = trim(str_replace('origin/', '', $branch));
+            if (substr($branch, 0, 9) == SCM_REMOTE_NAME . '/' . MERGED_BRANCH_MARKER) {
+                $this->merged_branches[] = trim(str_replace(SCM_REMOTE_NAME . '/', '', $branch));
             } else {
-                $this->active_branches[] = trim(str_replace('origin/', '', $branch));
+                $this->active_branches[] = trim(str_replace(SCM_REMOTE_NAME . '/', '', $branch));
             }
         }
     }
@@ -288,7 +288,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
             return $this->updateCurrentBranch($name);
         } else {
 
-            $shell_command = "{$this->git_connection_string} checkout -b {$name} origin/" . $name . " " . self::GET_RESULT_DIRECTIVE;
+            $shell_command = "{$this->git_connection_string} checkout -b {$name} " . SCM_REMOTE_NAME . "/" . $name . " " . self::GET_RESULT_DIRECTIVE;
             return shell_exec($shell_command);
         }
     }
@@ -300,7 +300,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      */
     public function updateCurrentBranch($name)
     {
-        $update_command = "{$this->git_connection_string} pull origin " . $name . self::GET_RESULT_DIRECTIVE;
+        $update_command = "{$this->git_connection_string} pull " . SCM_REMOTE_NAME . " " . $name . self::GET_RESULT_DIRECTIVE;
         return shell_exec($update_command);
     }
 
@@ -352,7 +352,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      * */
     public function getRepoInfo()
     {
-        //config --get remote.origin.url
+        //config --get remote.{SCM_REMOTE_NAME}.url
         list($revisionArray, $authorArray, $lastDateArray) = explode("\n", $this->git_info);
 
         list(, $revisionString) = explode(' ', $revisionArray, 2);
@@ -405,8 +405,8 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
             return false;
         }
 
-        $scm_command_beyond = "{$this->git_connection_string} rev-list ..origin/" . SCM_STABLE_NAME . " --count " . self::GET_RESULT_DIRECTIVE;
-        $scm_command_ahead = "{$this->git_connection_string} rev-list origin/" . SCM_STABLE_NAME . ".. --count " . self::GET_RESULT_DIRECTIVE;
+        $scm_command_beyond = "{$this->git_connection_string} rev-list .." . SCM_REMOTE_NAME . "/" . SCM_STABLE_NAME . " --count " . self::GET_RESULT_DIRECTIVE;
+        $scm_command_ahead = "{$this->git_connection_string} rev-list " . SCM_REMOTE_NAME . "/" . SCM_STABLE_NAME . ".. --count " . self::GET_RESULT_DIRECTIVE;
         $output_behind = trim(shell_exec($scm_command_beyond));
         $output_ahead = trim(shell_exec($scm_command_ahead));
 
