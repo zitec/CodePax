@@ -148,7 +148,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      */
     protected function remoteUpdate()
     {
-        $shell_command_update = "cd {$this->project_folder} {$this->command_separator}" . $this->path_to_git_bin . ' remote update ' . self::GET_RESULT_DIRECTIVE;
+        $shell_command_update = "cd {$this->project_folder} {$this->command_separator}" . $this->path_to_git_bin . ' remote update ' . SCM_REMOTE_NAME . ' ' . self::GET_RESULT_DIRECTIVE;
         $update_response = shell_exec($shell_command_update);
 
         if (is_numeric(strpos($update_response, "error: Could not"))) {
