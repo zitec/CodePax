@@ -127,6 +127,15 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
      * */
     protected function checkRemoteConfig($_git_user, $_git_pass, $_git_url)
     {
+        $configRepo = parse_url($_git_url);
+        $new_url = $configRepo['scheme'] . '://' . $_git_user . ':' . $_git_pass . '@' . $configRepo['host'] . $configRepo['path'];
+
+        $remotes = $this->getRemotes();
+        if (!in_array(SCM_REMOTE_NAME, $remotes)) {
+            $shell_command_add = $this->git_connection_string . ' remote add ' . SCM_REMOTE_NAME . ' ' . $new_url . ' ' . self::GET_RESULT_DIRECTIVE;
+            shell_exec($shell_command_add);
+            return;
+        }
 
         $shell_command_update = $this->git_connection_string . ' config remote.' . SCM_REMOTE_NAME . '.url ' . self::GET_RESULT_DIRECTIVE;
         $remote_url = shell_exec($shell_command_update);
@@ -135,12 +144,26 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         if (array_key_exists('user', $parsed_url) === false || array_key_exists('pass', $parsed_url) === false ||
                 $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
         ) {
-            $configRepo = parse_url($_git_url);
-            $new_url = $configRepo['scheme'] . '://' . $_git_user . ':' . $_git_pass . '@' . $configRepo['host'] . $configRepo['path'];
             $update_remote_url = $this->git_connection_string . ' remote set-url ' . SCM_REMOTE_NAME . ' ' . $new_url . ' ' . self::GET_RESULT_DIRECTIVE;
 
             shell_exec($update_remote_url);
         }
+    }
+
+    /**
+     * Return all remotes
+     */
+    protected function getRemotes()
+    {
+        $shell_command = $this->git_connection_string . ' remote ' . self::GET_RESULT_DIRECTIVE;
+        $response_string = shell_exec($shell_command);
+
+        $remotes = explode("\n", $response_string);
+        foreach ($remotes as &$remote) {
+            $remote = trim(trim($remote), "'");
+        }
+
+        return $remotes;
     }
 
     /**
