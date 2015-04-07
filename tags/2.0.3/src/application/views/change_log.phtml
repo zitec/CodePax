@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="css/style.css?v=<?php echo VERSION_NUMBER; ?>" />
+        <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+        <!--[if lte IE 9]>
+            <script src="/html5.js?v=<?php echo VERSION_NUMBER; ?>" type="text/javascript"></script>
+        <![endif]-->
+        <title><?php echo $this->project_name, ' - ', $this->environment; ?></title>
+    </head>
+    <body class="<?php echo $this->environment; ?>">
+        <header>
+            <h1 class="logo"><a href="index.php" title="CodePax">CodePax</a></h1>
+            <div class="version_number"><?php echo VERSION_NUMBER; ?></div>
+        </header>
+
+        <!-- BEGIN data -->
+        <section class="svn-details clearfix">
+            <div>
+                <article>
+                    <header>
+                        <h2 class="section-title icon-info">
+                            <span class="borderfix"></span>Changelog
+                        </h2>
+                    </header>
+
+                    <div class="change-log">
+                        <b>1.0.0</b> (28.08.2012)
+                        <ul>
+                            <li>initial commit</li>
+                        </ul>
+                        <b>2.0.0</b> (17.03.2014)
+                        <ul>
+                            <li>added GIT support</li>
+                            <li>added SVN Cleanup button</li>
+                            <li>added branch status versus trunk/stable</li>
+                        </ul>
+
+                    </div>
+
+                </article>
+
+                <div class="clear">&nbsp;</div>
+            </div>
+            <span class="copyright">An Open Source Solution by <a href="http://www.zitec.com" target="_blank" title="Complete Software Solutions">Zitec</a></span>
+        </section>
+    </body>
+</html>

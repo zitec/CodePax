@@ -1,0 +1,15 @@
+<?php if ($this->db_scripts) { ?>
+    <?php foreach ($this->db_scripts as $operation => $result) { ?>
+        <?php $result_is_array = is_array($result); ?>
+        <p><?php echo $operation, ': ', $result_is_array ? '' : $result, '</p>'; ?>
+            <?php if (is_array($result)) { ?>
+                <?php foreach ($result as $version => $status) { ?>
+                <p>&lowast; <?php echo $version; ?>: <?php echo $status; ?></p>
+            <?php } ?>
+        <?php } ?>
+    <?php } ?>
+<?php } ?>
+
+<?php if ($this->error_message) { ?>
+    <?php echo $this->error_message; ?>
+<?php } ?>
