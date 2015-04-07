@@ -142,7 +142,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $parsed_url = parse_url(trim($remote_url));
 
         if (array_key_exists('user', $parsed_url) === false || array_key_exists('pass', $parsed_url) === false ||
-                $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
+            $parsed_url['user'] != $_git_user || $parsed_url['pass'] != $_git_pass
         ) {
             $update_remote_url = $this->git_connection_string . ' remote set-url ' . SCM_REMOTE_NAME . ' ' . $new_url . ' ' . self::GET_RESULT_DIRECTIVE;
 
@@ -384,15 +384,15 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         $current_branch = $this->getCurrentPosition();
 
         $this->top_info = array_merge(
-                $this->top_info, array(
+            $this->top_info, array(
             "Branch" => $current_branch,
             "Revision" => $revisionString,
             "Author" => $authorString,
             "Last changed" => trim($lastDateString)
-                )
+            )
         );
         $this->more_info = array_merge(
-                $this->more_info, array(
+            $this->more_info, array(
             "Path" => $this->project_folder,
             "Working Copy Root Path" => $this->project_folder,
             //"Relative URL" => "^/branches/20130904_userdata_flow",
@@ -400,7 +400,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
             //"Repository UUID" => "4f0209ba-6557-4861-b6de-cf4b6729d2b8",
             "Node Kind" => "directory",
             "Schedule" => "normal"
-                )
+            )
         );
 
         return $this->git_info;
@@ -472,7 +472,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
     public function add($_path)
     {
         $shell_command = "cd {$this->project_folder}" . $this->command_separator;
-        $shell_command .= "{$this->path_to_git_bin} --force add {$_path} " . self::GET_RESULT_DIRECTIVE;
+        $shell_command .= "{$this->path_to_git_bin} add --force {$_path} " . self::GET_RESULT_DIRECTIVE;
         return shell_exec($shell_command);
     }
 
@@ -508,4 +508,15 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
         throw new Exception($message);
     }
 
+    public function push()
+    {
+        $shell_command_update = "cd {$this->project_folder} {$this->command_separator}";
+        $shell_command_update.= $this->path_to_git_bin . ' push ' . SCM_REMOTE_NAME . ' ' .$this->getCurrentPosition();
+        $shell_command_update.= ' ' . self::GET_RESULT_DIRECTIVE;
+        $update_response = shell_exec($shell_command_update);
+        echo $update_response;
+        if (is_numeric(strpos($update_response, "error: Could not"))) {
+            $this->setError($update_response);
+        }
+    }
 }
