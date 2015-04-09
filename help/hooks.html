@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html>
+<head>
+    <title>CodePax - Hooks</title>
+    <style>
+    body {background-color: linen;}
+    h1 {color: Chocolate;} 
+    h2 {color: DarkOrange;} 
+</style>
+</head>
+<body>
+<h1>CodePax - Hooks</h1>
+<p>In order to allow on-demand scripts execution within Codepax, a basic hook system was set to place.
+Basically when the Hooks are activated(by setting the "USE_HOOKS" constant to "true") a Hooks section will appear on the interface and all the found hooks will be listed there.</p>
+
+<p><img src="./img/codepax-hooks.jpg"></p>
+
+<h2>How to use hooks</h2>
+The hooks must be placed under "/hooks/" directory which is relative to Codepax directory structure
+<ul>
+<li>every hook must exist within a directory, let's say "SampleHook"</li>
+<li>the hook directory must contain at least the hook file named "Handler.php", with the class name, in this case "SampleHook_Handler.php"</li>
+<li>the hook class must implement the "CodePax_Hooks_Interface"</li>
+<li>you can place other files too under hook directory</li>
+</ul>
+</body>

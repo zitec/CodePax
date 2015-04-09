@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html>
+<head>
+    <title>CodePax - Usage</title>
+    <style>
+    body {background-color: linen;}
+    h1 {color: Chocolate;} 
+    h2 {color: DarkOrange;} 
+</style>
+</head>
+<body>
+<h1>CodePax - Usage</h1>
+<p>As CodePax is an independent piece of software it can be installed on as many servers as you have. A typical project setup consists in 4 development environments: </p>
+<ol>
+<li>the developer local machine</li>
+<li>the DEV environment - where each development branch gets tested</li>
+<li>the STG environment - the staging server where the trunk gets tested against a cloned production database </li>
+<li>the PROD environment - which is the live server where the code must eventually reach</li>
+</ol>
+<p>However is not necessary to configure it for all 4 environments. Below you will is the detailed CodePax behavior for each environment. The behavior is controlled from the config file.</p>
+
+CodePax consist in 3 modules:
+<ol>
+<li>SVN module - used to control the source code</li>
+<li>Database versioning - used to control the database schema</li>
+<li>Hooks - a module that loads the available hooks and executes them on demand and decoupled by the rest of the modules</li>
+</ol>
+
+<h2>Operations on DEV</h2>
+<h3>Code</h3>
+Given the fact that all new features and/or bugs are developed on separate branches, DEV is the place where they are actually tested by the developer itself and by the tester(s).
+The tester is able to change a specific (development/bug fixing) branch from the branch selector in SVN box of the main screen.
+Since this is the first place where the code gets deployed, it is the less stable in the workflow.
+The database data on DEV is usually a minimized replica of the data from the production and it is not used for performance and/or load testing. At this point only the functional part of the feature/bug is being checked.
+<h3>Database</h3>
+<p>Everytime the versioning system is being executed, some particular actions are taking place. Please note however that CodePax does not require the DB changes to be applied with every switch/update operation. 
+CodePax will compare the change scripts found on that specific branch with the latest version found in the database.</p>
+
+Steps:
+<ol>
+<li>(optional) the test data is being saved</li>
+<li>the database is emptied(drop and create DB)</li>
+<li>the baseline is applied</li>
+<li>the change scripts are being applied</li>
+<li>the test data is being loaded</li>
+<li>the data change scripts are being applied</li>
+</ol>
+
+<p>Note: by checking the "preserve test data" checkbox, the data currently in DB will be exported and uploaded to SVN on the current branch.</p>
+<p>Because we can have multiple developers working on the same code base, on different development branches, and because all of them will need to test their code on the DEV machine, we can end-up with some incompatible database changes from one branch to another. That is why we chose to completely drop and re-create the database in the DB versioning process.</p>
+<p>The versioning system will search and apply all change scripts that are higher than the latest baseline available on that branch. So, it will ignore the version number found in the z_db_versioning table. In fact this is the only environment where the z_db_versioning is being ignored.</p>
+
+<h2>Operations on STG</h2>
+<h3>Code</h3>
+<p>This is the point where a branch is merged to trunk and is getting tested. As opposed to DEV, here we have a real data set copied from the PROD. At this point the customer is able, in fact is being asked, to view the changes and/or fixes that were developed for the current release before going on the PROD machine.</p>
+<p>Only the code available on trunk can be tested on staging and CodePax is configured in such a way to allow us only update operations without branch or tag switches.</p>
+<p>Once the code is declared stable, a tag is created which marks a version number in application life-cycle.</p>
+
+<h3>Database</h3>
+<p>Here only the change scripts with the version number higher than DB version are being executed. A change script can be applied only once no matter if it successfully got executed or ended up with a SQL error. While is very less likely to have change scripts running in errors, they are not applied again because they might be incompatible with the rest of the change scripts that were executed in the same batch.
+Another key aspect of the STG server is that we are using it to generate the baselines whenever the developer/DBA thinks it is necessary. There is a good practice to always keep you database data in sync with the PROD environment to be able to see how the application behaves with the real data set.</p>
+
+Steps:
+<ol>
+<li>the change scripts with the version number higher than DB version are being executed</li>
+<li>then the data change scripts with the version number higher than DB version are being executed</li>
+</ol>
+
+<h2>Operations on PROD</h2>
+<h3>Code</h3>
+<p>Finally, the PROD environment is the place where the code needs to be and where the end users are able to see the changes we did in one complete development cycle.</p>
+<p>The release consists only in a switch command that brings the code to the latest tag that was created above. This way we minimize the downtime and if something goes wrong, we can quickly revert to the previous stable tag.</p>
+
+<h3>Database</h3>
+<p>Exactly like with the STG environment, only the change scripts with the version number higher than DB version are being executed. A change script can be applied only once.</p>
+Steps:
+<ol>
+<li>the change scripts with the version number higher than DB version are being executed</li>
+<li>then the data change scripts with the version number higher than DB version are being executed</li>
+</ol>
+</body>

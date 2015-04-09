@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html>
+<head>
+    <title>CodePax - Database Versioning</title>
+    <style>
+    body {background-color: linen;}
+    h1 {color: Chocolate;} 
+    h2 {color: DarkOrange;} 
+</style>
+</head>
+<body>
+<h1>CodePax - Database Versioning</h1>
+<h2>Goal</h2>
+<p><img src="./img/codepax-db-cartoon.jpg"></p>
+<ul>
+<li>to have a clear tracking of database changes and thus of its version(s)</li>
+<li>to be able to roll out database changes without needing access to the database itself</li>
+<li>to have a database schema available without getting it from the PROD env</li>
+<li>to have a minimal data set to test with</li>
+<li>eventually to be able to quickly set-up a functional test database from the baseline, change scripts and the data set</li>
+</ul>
+
+<h2>What DB versioning is NOT</h2>
+<ul>
+<li>it is not database backup</li>
+<li>it does not version data, but database schema/structure, however you can push data changes via "data_change_scripts"</li>
+<li>it cannot revert to a previous DB version; so it goes incremental only</li>
+</ul>
+
+<h2>Terms</h2>
+<ul>
+<li>baseline - represents the database schema including database objects like: triggers, views, etc; the file is named "xx.yy.zz.sql"</li>
+<li>change script - represents a file that alters the database structure which contains one ore more SQL - commands; the file is named "xx.yy.zz.sql"</li>
+<li>data change script - represents a file that alters the database data which contains one ore more SQL commands; the file is named "xx.yy.zz.sql". This type of file should be used to propagate minor data changes to all development environments. One example could be for adding new static pages into a given table or insert a new access right, etc</li>
+<li>test data - represents a minimal test data that should work with the latest baseline and change scripts available; the file is named "data.sql"</li>
+<li>z_db_versioning - represents the table that will be created in each versioned database and will hold the current version of the database</li>
+<li>XX - represents the major no. of database</li>
+<li>YY - the minor</li>
+<li>ZZ - the revision point</li>
+</ul>
+
+<h2>Directory structure</h2>
+<ul>
+<li>all the DB versioning related files are stored under "db" directory(this name is configurable per project)</li>
+<li>the baselines are stored under "/app_root/db/baselines/"</li>
+<li>the change scripts under "/app_root/db/change_scripts/"</li>
+<li>the data change scripts under "/app_root/db/data_change_scripts/"</li>
+<li>and the test data here "/app_root/db/test_data/"</li>
+</ul>
+
+<h2>Workflow</h2>
+<b>Important!</b> given the two change scripts types(structure and data) the system keeps track of 2 versions: one being for structure and one for data. Both of them are displayed in CodePax under Database Versioning section. The versions for each type are independent and you can use change scripts only, data change scripts only or both of them.
+
+<p>The diagram below represents the workflow and available operations for each development environment:</p>
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <td>Action/Environment</td>
+        <td>Save test data (sql or zip)</td>
+        <td>Drop/Create DB</td>
+        <td>Apply Baseline</td>
+        <td>Run Change Scripts</td>
+        <td>Import Test Data (sql or zip)</td>
+        <td>Run Data Change Scripts</td>
+    </tr>
+    <tr>
+        <td>DEV</td>
+        <td>optional</td>
+        <td>x</td>
+        <td>x</td>
+        <td>x</td>
+        <td>x</td>
+        <td>x</td>
+    </tr>
+    <tr>
+        <td>STG</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>x</td>
+        <td></td>
+        <td>x</td>
+    </tr>
+    <tr>
+        <td>PROD</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>x</td>
+        <td></td>
+        <td>x</td>
+    </tr>
+</table>
+</body>

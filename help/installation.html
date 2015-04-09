@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html>
+<head>
+    <title>CodePax - Installation</title>
+    <style>
+    body {background-color: linen;}
+    h1 {color: Chocolate;} 
+    h2 {color: DarkOrange;} 
+</style>
+</head>
+<body>
+<h1>CodePax - Installation</h1>
+<h2>General considerations</h2>
+<p>CodePax must be installed on every environment you want to control. In case your application has one instance on a dev server and another one on a staging server, CodePax needs to be deployed for both of them.</p>
+
+<p>Usually CodePax is placed under an alias such as yourapp.dev.domain.com/codepax/. A good practice is to use the .htaccess file inside public dir to restrict the access based on the incoming IP addresses. Beside that you can employ a HTTP basic auth to further restrict the access.</p>
+
+CodePax need the following applications and tools to work:
+<ul>
+<li>a web server, like: Apache, Nginx, IIS, etc</li>
+<li>a Subversion command line client (SlikSvn works well for Windows)</li>
+<li>PHP 5.2 or higher</li>
+<li>the following PHP extensions must be enabled depending of the set-up options you want to follow:</li>
+- PDO_mysql - in case database versioniong is enabled and you use MySQL<br>
+- PDO_pgsql - in case PostgreSQL is your database of choice<br>
+- SqlSrv - a driver actively maintained by Microsoft http://msdn.microsoft.com/en-US/library/cc296152(v=sql.90).aspx<br>
+- Zip extension - in case you want to use the "preserve test data" functionality under the Database versioning<br>
+<li>you need a Subversion user with read-write access for the repo you will be using</li>
+<li>rename config.sample.php to config.php (the file is under /src/application/config/) and fill in the appropriate constants by following the inline code comments</li>
+</ul>
+
+<h2>Database versioning</h2>
+<p>In order to benefit of the database versioning system, you need to make one time configurations on every environment you plan to use CodePax.
+Staging (STG)</p>
+This should be the first one to start with.
+<ul>
+<li>manually synchronize the PROD database with the one on STG. The most important is to have the latest database structure on STG.</li>
+<li>generate the versioning table by running /utils/generate_db_versions_table.php</li>
+</ul>
+
+<h2>Configuring the project</h2>
+Below you will find the necessary steps you must take in order to setup CodePax for your project:
+<h3>STG</h3>
+<ul>
+<li>The database from the PROD server is dumped and then uploaded on the STG server</li>
+<li>From the CodePax root run the script /utils/generate_db_versions_table.php</li>
+<li>The code is switched on the trunk(only if it this hasn't been done before this)</li>
+<li>The necesary folder structure is created. Apache or the web server provider of your choosing must be given write rights to these folders:</li>
+- /project_root/DB_VERSIONING_DIR/baselines/<br>
+- /project_root/DB_VERSIONING_DIR/change_scripts/<br>
+- /project_root/DB_VERSIONING_DIR/data_change_scripts/<br>
+- /project_root/DB_VERSIONING_DIR/test_data/<br>
+</ul>
+<p>DB_VERSIONING_DIR is a constant definded in the CodePax config.</p>
+<ul>
+<li>A test data file must be created at this location: /project_root/DB_VERSIONING_DIR/test_data/data.sql . If time is short, the test data file can be created as an empty file but it is mandatory it exists.</li>
+<li>Using the SVN client of your choosing, add and commit these folders to your project. An explanatory message should be used like "created directory structure for DataBase versioning"</li>
+<li>From the CodePax root run the script: /utils/generate_baseline.php</li>
+<li>A tag with the content is created.</li>
+</ul>
+<h3>PROD</h3>
+<ul>
+<li>From the CodePax root run the script: /utils/generate_db_versions_table.php</li>
+<li>The first entry in the table is entered manually, with baseline 1.0.0 (INSERT INTO z_db_versions (major,minor,point,script_type,date_added) VALUES(1,0,0,1, NOW()))</li>
+<li>A switch to the tag above will be performed</li>
+</ul>
+<h3>DEV</h3>
+<ul>
+<li>From the CodePax root run the script: /utils/generate_db_versions_table.php</li>
+<li>The first entry in the table is entered manually, with baseline 1.0.0 (INSERT INTO z_db_versions (major,minor,point,script_type,date_added) VALUES(1,0,0,1, NOW()))</li>
+</ul>
+</body>
