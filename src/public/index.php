@@ -22,6 +22,10 @@
  */
 require '../application/bootstrap.php';
 
+// deactivate cache in proxy/browser
+header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+header("Expires: Mon, 26 Sep 2006 00:00:00 GMT+2"); // Date in the past
+
 // initialize view object
 $view = new CodePax_View();
 $view->setViewsPath(VIEWS_PATH);
