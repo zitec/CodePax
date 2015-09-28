@@ -49,75 +49,76 @@
                         </div>
                     <?php } ?>
                 </article>
+                <?php if ($this->use_code_versioning) { ?>
+	                <article>
+	                    <header>
+	                        <h2 class="section-title icon-svn">
+	                            <span class="borderfix"></span><?php echo VERSIONING ?>
+	                        </h2>
+	                    </header>
+	                    <div>
+	                        <?php if ($this->active_branches) { ?>
+	                            <form>
+	                                <label>Active Branches:<select id="select-active-branches">
+	                                        <option value="0">--- Choose a branch ---</option>
+	                                        <?php foreach ($this->active_branches as $active_branch) { ?>
+	                                            <option value="<?php echo $active_branch; ?>" <?php echo $this->current_position && $this->current_position == $active_branch ? 'selected="selected"' : ''; ?>><?php echo $active_branch; ?></option>
+	                                        <?php } ?>
+	                                    </select>
+	                                </label>
+	                                <input type="button" value="Switch to branch" onclick="switchTo('branch', document.getElementById('select-active-branches').value)" >
+	                            </form>
+	                        <?php } ?>
 
-                <article>
-                    <header>
-                        <h2 class="section-title icon-svn">
-                            <span class="borderfix"></span><?php echo VERSIONING ?>
-                        </h2>
-                    </header>
-                    <div>
-                        <?php if ($this->active_branches) { ?>
-                            <form>
-                                <label>Active Branches:<select id="select-active-branches">
-                                        <option value="0">--- Choose a branch ---</option>
-                                        <?php foreach ($this->active_branches as $active_branch) { ?>
-                                            <option value="<?php echo $active_branch; ?>" <?php echo $this->current_position && $this->current_position == $active_branch ? 'selected="selected"' : ''; ?>><?php echo $active_branch; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </label>
-                                <input type="button" value="Switch to branch" onclick="switchTo('branch', document.getElementById('select-active-branches').value)" >
-                            </form>
-                        <?php } ?>
+	                        <?php if ($this->merged_branches) { ?>
+	                            <div class="clear"></div>
+	                            <a href="javascript:animatedcollapse.show('slide-down-merged')" id="show-merged" title="show merged branches">show merged branches</a>
+	                            <a href="javascript:animatedcollapse.hide('slide-down-merged')" id="hide-merged" title="hide merged branches">hide merged branches</a>
+	                            <div id="slide-down-merged" style="width: 100%; display:none">
+	                                <form>
+	                                    <label>Merged Branches:
+	                                        <select id="select-merged-branches">
+	                                            <option value="0">--- Choose a branch ---</option>
+	                                            <?php foreach ($this->merged_branches as $merged_branch) { ?>
+	                                                <option value="<?php echo $merged_branch; ?>" <?php echo $this->current_position && $this->current_position == $merged_branch ? 'selected="selected"' : ''; ?>><?php echo $merged_branch; ?></option>
+	                                            <?php } ?>
+	                                        </select>
+	                                    </label>
+	                                    <input type="button" value="Switch to branch" onclick="switchTo('branch', document.getElementById('select-merged-branches').value)" >
+	                                </form>
+	                            </div>
+	                        <?php } ?>
 
-                        <?php if ($this->merged_branches) { ?>
-                            <div class="clear"></div>
-                            <a href="javascript:animatedcollapse.show('slide-down-merged')" id="show-merged" title="show merged branches">show merged branches</a>
-                            <a href="javascript:animatedcollapse.hide('slide-down-merged')" id="hide-merged" title="hide merged branches">hide merged branches</a>
-                            <div id="slide-down-merged" style="width: 100%; display:none">
-                                <form>
-                                    <label>Merged Branches:
-                                        <select id="select-merged-branches">
-                                            <option value="0">--- Choose a branch ---</option>
-                                            <?php foreach ($this->merged_branches as $merged_branch) { ?>
-                                                <option value="<?php echo $merged_branch; ?>" <?php echo $this->current_position && $this->current_position == $merged_branch ? 'selected="selected"' : ''; ?>><?php echo $merged_branch; ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </label>
-                                    <input type="button" value="Switch to branch" onclick="switchTo('branch', document.getElementById('select-merged-branches').value)" >
-                                </form>
-                            </div>
-                        <?php } ?>
+	                        <div class="clear">&nbsp;</div>
 
-                        <div class="clear">&nbsp;</div>
-
-                        <?php if ($this->tags) { ?>
-                            <label>Tags:
-                                <select id="select-tags">
-                                    <option value="0">--- Choose Tag ---</option>
-                                    <?php foreach ($this->tags as $tag) { ?>
-                                        <option value="<?php echo $tag; ?>" <?php echo $this->current_position && $this->current_position == $tag ? 'selected="selected"' : ''; ?>><?php echo $tag; ?></option>
-                                    <?php } ?>
-                                </select>
-                            </label>
-                            <input type="button" value="Switch to tag" onclick="switchTo('tag', document.getElementById('select-tags').value)" >
-                        <?php } ?>
-                        <div class="clear tags-margins">&nbsp;</div>
-                        <div class="clearfix">
-                            <label>Revision:
-                                <br class="display" />
-                                <input type="text" name="revision_no" id="revision_no" size="5">
-                                <p>(leave blank to update to HEAD revision)</p>
-                            </label>
-                            <input type="button" value="Update" onclick="switchTo('revision_no', document.getElementById('revision_no').value)" >
-                            <?php if ($this->switch_to_trunk) { ?>
-                                <input type="button" value="Switch to <?php echo $this->switch_to_trunk_button; ?>" onclick="switchTo('stable', 'stable')">
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="clear"></div>
-                </article>
-
+	                        <?php if ($this->tags) { ?>
+	                            <label>Tags:
+	                                <select id="select-tags">
+	                                    <option value="0">--- Choose Tag ---</option>
+	                                    <?php foreach ($this->tags as $tag) { ?>
+	                                        <option value="<?php echo $tag; ?>" <?php echo $this->current_position && $this->current_position == $tag ? 'selected="selected"' : ''; ?>><?php echo $tag; ?></option>
+	                                    <?php } ?>
+	                                </select>
+	                            </label>
+	                            <input type="button" value="Switch to tag" onclick="switchTo('tag', document.getElementById('select-tags').value)" >
+	                        <?php } ?>
+	                        <div class="clear tags-margins">&nbsp;</div>
+	                        <div class="clearfix">
+	                            <label>Revision:
+	                                <br class="display" />
+	                                <input type="text" name="revision_no" id="revision_no" size="5">
+	                                <p>(leave blank to update to HEAD revision)</p>
+	                            </label>
+	                            <input type="button" value="Update" onclick="switchTo('revision_no', document.getElementById('revision_no').value)" >
+	                            <?php if ($this->switch_to_trunk) { ?>
+	                                <input type="button" value="Switch to <?php echo $this->switch_to_trunk_button; ?>" onclick="switchTo('stable', 'stable')">
+	                            <?php } ?>
+	                        </div>
+	                    </div>
+	                    <div class="clear"></div>
+	                </article>
+                <?php } ?>
+                
                 <?php if ($this->use_hooks) { ?>
                     <form id="apply_hooks_form" action="run_hooks.php" method="post">
                         <article>
