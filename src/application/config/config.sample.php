@@ -27,6 +27,11 @@
 define('PROJECT_NAME', 'Sample Project');
 
 /**
+ * Whether the application will use SVN/GIT
+ * */
+define('USE_CODE_VERSIONING', true);
+
+/**
  * Defines the versioning system : SVN/GIT
  * */
 define('VERSIONING', 'SVN');

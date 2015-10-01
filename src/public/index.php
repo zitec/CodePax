@@ -76,6 +76,11 @@ $view->repo_top_info = $repo_wrapper->getRepoTopInfo();
 $view->repo_more_info = $repo_wrapper->getRepoMoreInfo();
 $view->revision_status = $repo_wrapper->getBranchStatus();
 
+//--- hide "SVN/GIT code versioning section"
+if (defined('USE_CODE_VERSIONING') && USE_CODE_VERSIONING === true) {
+    $view->use_code_versioning = true;
+}
+
 // repo current working copy
 $view->current_position = $repo_wrapper->getCurrentPosition(); //$repo_wrapper->getCurrentPosition(); //FIXME
 //--- show "switch to trunk" button
