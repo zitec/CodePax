@@ -100,7 +100,7 @@ class CodePax_Scm_Git extends CodePax_Scm_Abstract
 
         $this->checkLocalConfig();
 
-        if (!defined('GIT_PROTOCOL') || (defined('GIT_PROTOCOL') && GIT_PROTOCOL != 'HTTPS') || GIT_REMOTE_NAME != 'origin') {
+        if (!defined('GIT_PROTOCOL') || (defined('GIT_PROTOCOL') && GIT_PROTOCOL == 'HTTPS')) {
             $this->checkRemoteConfig($_git_user, $_git_pass, $_git_url);
         }
 

@@ -110,7 +110,7 @@ define('SCM_STABLE_NAME', "stable");
  * Indicates the remote name to use for SCM
  * GIT ONLY
  * */
-define('SCM_REMOTE_NAME', 'origin');
+define('GIT_REMOTE_NAME', 'origin');
 
 /**
  * Indicates the SCM prefix used for tags
